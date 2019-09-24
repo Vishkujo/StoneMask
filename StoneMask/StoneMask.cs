@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
-using TeximpNet.DDS;
 using TeximpNet;
+using TeximpNet.DDS;
 using TeximpNet.Compression;
 
 namespace StoneMask
@@ -28,7 +28,8 @@ namespace StoneMask
         public string moddedFormat;
         public bool saveXfbin = false;
         public List<byte> fileBytes = new List<byte>();
-        //public List<string> NameList = new List<string>();
+        public List<NUT> texList = new List<NUT>();
+        public int textureCount = 0;
         public int nameCount = 0;
 
         // Open XFBIN (1st browse button)
@@ -41,6 +42,7 @@ namespace StoneMask
                 xfbinPathBox.Text = xfbinPath;
                 xfbinOpen = true;
                 fileBytes.Clear();
+                texList.Clear();
                 // Zealot's code for reading hex of xfbin
                 if (xfbinPath != "" && File.Exists(xfbinPath))
                 {
@@ -49,8 +51,34 @@ namespace StoneMask
                     {
                         fileBytes.Add(xfbinFile[a]);
                     }
-					
-					// Generate texture names list
+
+                    //Generate list of NTP3 files
+                    {
+                        for (int x = 0; x < fileBytes.Count - 3; x++)
+                        {
+                            //NTP3
+                            if (fileBytes[x] == 78 && fileBytes[x + 1] == 84 && fileBytes[x + 2] == 80 && fileBytes[x + 3] == 51)
+                            {
+                                int headerSize = fileBytes[x + 0x1D];
+                                int texStart = x + headerSize + 0x10;
+                                int fileSize = fileBytes[x - 0x17] * 0x10000 + fileBytes[x - 0x16] * 0x100 + fileBytes[x - 0x15];
+                                int ntp3Size = fileBytes[x - 3] * 0x10000 + fileBytes[x - 2] * 0x100 + fileBytes[x - 1];
+                                //int textureSize3 = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
+                                int textureSize = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
+                                //int mipCount = fileBytes[x + 0x21];
+                                List<byte> textureFile = new List<byte>();
+
+                                for (int a = texStart; a < textureSize + 1; a++)
+                                {
+                                    textureFile.Add(xfbinFile[a]);
+                                }
+                                textureCount++;
+                            }
+                        }
+                    }
+
+                    // Generate texture names list
+                    // Had to move it down so we can limit the number of names
                     {
                         int nuccID = 0x00;
                         int StartID = 0x00;
@@ -86,7 +114,7 @@ namespace StoneMask
                         NutEnd = StartID;
 
                         List<string> Lines = new List<string>();
-                        List<byte> bytesInFile2 = new List<byte>();
+                        List<byte> nameBytes = new List<byte>();
                         // Clears textbox if browse is clicked again
                         selectTexBox.Items.Clear();
 
@@ -102,24 +130,30 @@ namespace StoneMask
                                     {
                                         for (int b = i + 1; b < x; b++)
                                         {
-                                            bytesInFile2.Add(fileBytes[b]);
+                                            nameBytes.Add(fileBytes[b]);
                                         }
-                                        bytesInFile2.Add(0x00);
+                                        nameBytes.Add(0x00);
                                         i = NutEnd - 1;
                                     }
                                 }
+                                nameCount++;
                             }
+                            if (nameCount == textureCount) x = EndID;
                         }
-                        for (int x = 0; x < bytesInFile2.Count; x++)
+                        // Alternate fix for extra line, needed here before we add it to the list
+                        int lastByte = nameBytes.Count - 1;
+                        nameBytes.RemoveAt(lastByte);
+
+                        for (int x = 0; x < nameBytes.Count; x++)
                         {
-                            if (bytesInFile2[x] == 0x00)
+                            if (nameBytes[x] == 0x00)
                             {
-                                bytesInFile2[x] = 0x0A;
+                                nameBytes[x] = 0x0A;
                             }
                         }
-                        string tx = Encoding.ASCII.GetString(bytesInFile2.ToArray());
+                        string tx = Encoding.ASCII.GetString(nameBytes.ToArray());
                         Lines = tx.Split('\n').ToList();
-                        bytesInFile2.Clear();
+                        nameBytes.Clear();
 
                         foreach (var nameInList in Lines)
                         {
@@ -127,42 +161,6 @@ namespace StoneMask
                             // Remove empty line at the end
                             if (nameInList.ToString() == "")
                                 selectTexBox.Items.Remove(nameInList.ToString());
-                        }
-                        nameCount = Lines.Count;
-                    }
-
-                    //Generate list of NTP3 files
-                    {
-                        int textureCount = 0;
-                        for (int x = 0; x < fileBytes.Count - 3; x++)
-                        {
-                            //NTP3
-                            if (fileBytes[x] == 78 && fileBytes[x + 1] == 84 && fileBytes[x + 2] == 80 && fileBytes[x + 3] == 51)
-                            {
-                                int textureSize1 = fileBytes[x - 0x17] * 0x10000 + fileBytes[x - 0x16] * 0x100 + fileBytes[x - 0x15];
-                                int textureSize2 = fileBytes[x - 3] * 0x10000 + fileBytes[x - 2] * 0x100 + fileBytes[x - 1];
-                                //int textureSize3 = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
-                                int textureSize4 = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
-                                //int mipCount = fileBytes[x + 0x21];
-                                int texStart = 0;
-                                List<byte> textureFile = new List<byte>();
-
-                                for (int a = x; a < textureSize1; a++)
-                                {
-                                    //GIDX
-                                    if (fileBytes[a] == 71 && fileBytes[a + 1] == 73 && fileBytes[a + 2] == 68 && fileBytes[a + 3] == 88)
-                                    {
-                                        texStart = a + 16;
-                                        a = textureSize1;
-                                    }
-                                }
-                                for (int a = texStart; a < textureSize4 + 1; a++)
-                                {
-                                    textureFile.Add(xfbinFile[a]);
-                                }
-                                textureCount++;
-                            }
-                            if (textureCount == nameCount) x = fileBytes.Count;
                         }
                     }
                 }
