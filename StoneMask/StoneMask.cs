@@ -41,6 +41,8 @@ namespace StoneMask
                 string xfbinPath = openXfbinDialog.FileName;
                 xfbinPathBox.Text = xfbinPath;
                 xfbinOpen = true;
+                nameCount = 0;
+                textureCount = 0;
                 fileBytes.Clear();
                 texList.Clear();
                 // Zealot's code for reading hex of xfbin
@@ -65,13 +67,25 @@ namespace StoneMask
                                 int ntp3Size = fileBytes[x - 3] * 0x10000 + fileBytes[x - 2] * 0x100 + fileBytes[x - 1];
                                 //int textureSize3 = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
                                 int textureSize = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
-                                //int mipCount = fileBytes[x + 0x21];
-                                List<byte> textureFile = new List<byte>();
+                                int mipCount = fileBytes[x + 0x21];
+                                int resX = fileBytes[x + 0x24] * 0x100 + fileBytes[x + 0x25];
+                                int resY = fileBytes[x + 0x26] * 0x100 + fileBytes[x + 0x27];
 
+                                List<byte> textureFile = new List<byte>();
                                 for (int a = texStart; a < textureSize + 1; a++)
                                 {
                                     textureFile.Add(xfbinFile[a]);
                                 }
+                                texList.Add(new NUT
+                                {
+                                    FileSize = fileSize,
+                                    NTP3Size = ntp3Size,
+                                    TexSize = textureSize,
+                                    MipMaps = mipCount,
+                                    ResX = resX,
+                                    ResY = resY,
+                                    TexFile = textureFile,
+                                });
                                 textureCount++;
                             }
                         }
@@ -132,7 +146,7 @@ namespace StoneMask
                                         {
                                             nameBytes.Add(fileBytes[b]);
                                         }
-                                        nameBytes.Add(0x00);
+                                        nameBytes.Add(0x0A);
                                         i = NutEnd - 1;
                                     }
                                 }
@@ -140,27 +154,27 @@ namespace StoneMask
                             }
                             if (nameCount == textureCount) x = EndID;
                         }
+
                         // Alternate fix for extra line, needed here before we add it to the list
                         int lastByte = nameBytes.Count - 1;
                         nameBytes.RemoveAt(lastByte);
 
-                        for (int x = 0; x < nameBytes.Count; x++)
-                        {
-                            if (nameBytes[x] == 0x00)
-                            {
-                                nameBytes[x] = 0x0A;
-                            }
-                        }
                         string tx = Encoding.ASCII.GetString(nameBytes.ToArray());
                         Lines = tx.Split('\n').ToList();
                         nameBytes.Clear();
 
-                        foreach (var nameInList in Lines)
+                        // Add names to their corresponding textures
+                        for (int x = 0; x < nameCount; x++)
                         {
-                            selectTexBox.Items.Add(nameInList.ToString());
+                            texList[x].TexName = Lines[x];
+                        }
+
+                        foreach (var nameInList in texList)
+                        {
+                            selectTexBox.Items.Add(nameInList.TexName);
                             // Remove empty line at the end
-                            if (nameInList.ToString() == "")
-                                selectTexBox.Items.Remove(nameInList.ToString());
+                            if (nameInList.TexName == "")
+                                selectTexBox.Items.Remove(nameInList.TexName);
                         }
                     }
                 }
