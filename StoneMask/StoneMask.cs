@@ -25,12 +25,7 @@ namespace StoneMask
         public bool originalTexOpen;
         public bool moddedTexOpen;
         public bool xfbinOpen;
-        public DDSContainer originalDDS;
-        public Surface newDDS;
-        public bool setData;
-        public string textureFormat;
         public string moddedFormat;
-        public CompressionFormat texFormat;
         public bool saveXfbin = false;
         public List<byte> fileBytes = new List<byte>();
         //public List<string> NameList = new List<string>();
@@ -182,30 +177,24 @@ namespace StoneMask
             {
                 moddedTexPathBox.Text = openModdedTexDialog.FileName;
                 moddedTexOpen = true;
+                string moddedFormat = "None";
                 // Check if file is dds or png
                 if (DDSFile.IsDDSFile(openModdedTexDialog.FileName) == true)
                 {
                     // Get dds data
                     DDSContainer moddedTexture = DDSFile.Read(openModdedTexDialog.FileName);
                     moddedFormat = moddedTexture.Format.ToString();
-                    newDDS = Surface.LoadFromFile(openModdedTexDialog.FileName, true);
                     if (moddedFormat == "BC3_UNorm")
-                    {
                         moddedFormat = "DXT5";
-                    }
                     else if (moddedFormat == "BC1_UNorm")
-                    {
                         moddedFormat = "DXT1";
-                    }
                     moddedTexCompression.Text = moddedFormat;
                     moddedTexture.Dispose();
                 }
                 else
                 {
                     //PNG format
-                    moddedFormat = "None";
-                    moddedTexCompression.Text = moddedFormat;
-                    newDDS = Surface.LoadFromFile(openModdedTexDialog.FileName, true);
+                    moddedTexCompression.Text = moddedFormat;                    
                 }
             }
         }
@@ -219,50 +208,40 @@ namespace StoneMask
                 originaltexPathBox.Text = openOriginalTexDialog.FileName;
                 // Get original DDS data
                 DDSContainer originalDDS = DDSFile.Read(openOriginalTexDialog.FileName);
-                textureFormat = originalDDS.Format.ToString();
-                if (textureFormat == "BC3_UNorm")
+                string originalFormat = originalDDS.Format.ToString();
+                int originalMMCount = originalDDS.MipChains[0].Count;
+                if (originalFormat == "BC3_UNorm")
                 {
-                    textureFormat = "DXT5";
+                    originalFormat = "DXT5";
                     exportSettingBox.SelectedIndex = 2;
                 }
-                else if (textureFormat == "BC1_UNorm")
+                else if (originalFormat == "BC1_UNorm")
                 {
-                    textureFormat = "DXT1";
+                    originalFormat = "DXT1";
                     exportSettingBox.SelectedIndex = 0;
                 }
                 originalTexOpen = true;
-                originalTexCompression.Text = textureFormat;
+                originalTexCompression.Text = originalFormat;
+                mipMapCountLabel1.Text = originalMMCount.ToString();
             }
         }
-
-        //Set MipMapFilter to Triangle
-        public MipmapFilter MipmapFilter { get { return MipmapFilter.Triangle; } }
-
-        // Count mipmaps
-        public int MipmapCount { get { return originalDDS.MipChains[0].Count; } }
         
-        //Set Compression Format based on what's selected in export settings
-        public CompressionFormat Format
-        {
-            get
-            {
-                if (exportSettingBox.SelectedIndex == 0)
-                    texFormat = CompressionFormat.DXT1;
-                else if (exportSettingBox.SelectedIndex == 1)
-                    texFormat = CompressionFormat.DXT1a;
-                else if (exportSettingBox.SelectedIndex == 2)
-                    texFormat = CompressionFormat.DXT5;
-                return texFormat;
-            }
-        }
-
         //Convert the png/export as dds
         public void Convert()
         {
+            Surface newDDS = Surface.LoadFromFile(openModdedTexDialog.FileName, true);
+            MipmapFilter MipmapFilter = MipmapFilter.Triangle;
+            CompressionFormat texFormat = new CompressionFormat();
+            if (exportSettingBox.SelectedIndex == 0)
+                texFormat = CompressionFormat.DXT1;
+            else if (exportSettingBox.SelectedIndex == 1)
+                texFormat = CompressionFormat.DXT1a;
+            else if (exportSettingBox.SelectedIndex == 2)
+                texFormat = CompressionFormat.DXT5;
             Compressor compress;
             compress = new Compressor();
-            setData = compress.Input.SetData(newDDS);
-            compress.Compression.Format = Format;
+            compress.Input.SetData(newDDS);
+            compress.Compression.Format = texFormat;
             compress.Input.SetMipmapGeneration(true, 12);
             compress.Input.MipmapFilter = MipmapFilter;
             // Removes the DDS header for the save xfbin button
@@ -297,14 +276,6 @@ namespace StoneMask
             {
                 saveXfbin = true;
             }
-        }
-
-        public new void Dispose()
-        {
-            // Dispose of unmanaged resources.
-            Dispose(true);
-            // Suppress finalization.
-            GC.SuppressFinalize(this);
         }
     }
 }
