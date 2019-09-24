@@ -45,6 +45,7 @@ namespace StoneMask
                 string xfbinPath = openXfbinDialog.FileName;
                 xfbinPathBox.Text = xfbinPath;
                 xfbinOpen = true;
+                fileBytes.Clear();
                 // Zealot's code for reading hex of xfbin
                 if (xfbinPath != "" && File.Exists(xfbinPath))
                 {
@@ -56,7 +57,6 @@ namespace StoneMask
 					
 					// Generate texture names list
                     {
-
                         int nuccID = 0x00;
                         int StartID = 0x00;
                         int EndID = 0x00;
@@ -92,6 +92,8 @@ namespace StoneMask
 
                         List<string> Lines = new List<string>();
                         List<byte> bytesInFile2 = new List<byte>();
+                        // Clears textbox if browse is clicked again
+                        selectTexBox.Items.Clear();
 
                         for (int x = NutEnd; x < EndID; x++)
                         {
@@ -127,6 +129,9 @@ namespace StoneMask
                         foreach (var nameInList in Lines)
                         {
                             selectTexBox.Items.Add(nameInList.ToString());
+                            // Remove empty line at the end
+                            if (nameInList.ToString() == "")
+                                selectTexBox.Items.Remove(nameInList.ToString());
                         }
                         nameCount = Lines.Count;
                     }
