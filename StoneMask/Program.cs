@@ -19,4 +19,16 @@ namespace StoneMask
             Application.Run(new StoneMask());
         }
     }
+    public class NUT
+    {
+        public string TexName { get; set; }
+        public int FileSize { get; set; }
+        public int NTP3Size { get; set; }
+        public int TexSize { get; set; }
+        public string Format { get; set; }
+        public int MipMaps { get; set; }
+        public int ResX { get; set; }
+        public int ResY { get; set; }
+        public List<byte> TexFile { get; set; }
+    }
 }
