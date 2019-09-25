@@ -48,7 +48,7 @@
             this.selectTexBox = new System.Windows.Forms.ListBox();
             this.selectTexLabel = new System.Windows.Forms.Label();
             this.previewLabel1 = new System.Windows.Forms.Label();
-            this.texturePreview1 = new System.Windows.Forms.PictureBox();
+            this.texturePreview2 = new System.Windows.Forms.PictureBox();
             this.exportOriginalDDS = new System.Windows.Forms.Button();
             this.exportNUT = new System.Windows.Forms.Button();
             this.exportSettingBox = new System.Windows.Forms.ComboBox();
@@ -57,7 +57,7 @@
             this.mipSettingLabel = new System.Windows.Forms.Label();
             this.mipLabelMax = new System.Windows.Forms.Label();
             this.mipLabelMin = new System.Windows.Forms.Label();
-            this.texturePreview2 = new System.Windows.Forms.PictureBox();
+            this.texturePreview1 = new System.Windows.Forms.PictureBox();
             this.previewLabel2 = new System.Windows.Forms.Label();
             this.mipMapCountLabel1 = new System.Windows.Forms.Label();
             this.mipMapLabel1 = new System.Windows.Forms.Label();
@@ -71,9 +71,14 @@
             this.originaltexBrowse = new System.Windows.Forms.Button();
             this.originaltexLabel = new System.Windows.Forms.Label();
             this.originaltexPathBox = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).BeginInit();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.texturePreview2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // openOriginalTexDialog
@@ -85,7 +90,7 @@
             // moddedTexPathBox
             // 
             this.moddedTexPathBox.AllowDrop = true;
-            this.moddedTexPathBox.Location = new System.Drawing.Point(37, 388);
+            this.moddedTexPathBox.Location = new System.Drawing.Point(32, 422);
             this.moddedTexPathBox.Name = "moddedTexPathBox";
             this.moddedTexPathBox.Size = new System.Drawing.Size(772, 29);
             this.moddedTexPathBox.TabIndex = 5;
@@ -93,17 +98,18 @@
             // moddedtexLabel
             // 
             this.moddedtexLabel.AutoSize = true;
-            this.moddedtexLabel.BackColor = System.Drawing.Color.YellowGreen;
-            this.moddedtexLabel.Location = new System.Drawing.Point(32, 360);
+            this.moddedtexLabel.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.moddedtexLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.142858F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.moddedtexLabel.Location = new System.Drawing.Point(27, 394);
             this.moddedtexLabel.Name = "moddedtexLabel";
-            this.moddedtexLabel.Size = new System.Drawing.Size(423, 25);
+            this.moddedtexLabel.Size = new System.Drawing.Size(470, 25);
             this.moddedtexLabel.TabIndex = 4;
             this.moddedtexLabel.Text = "Open modded texture\'s image file (.dds or .png)";
             // 
             // xfbinPathBox
             // 
             this.xfbinPathBox.AllowDrop = true;
-            this.xfbinPathBox.Location = new System.Drawing.Point(37, 50);
+            this.xfbinPathBox.Location = new System.Drawing.Point(32, 84);
             this.xfbinPathBox.Name = "xfbinPathBox";
             this.xfbinPathBox.Size = new System.Drawing.Size(772, 29);
             this.xfbinPathBox.TabIndex = 8;
@@ -112,15 +118,16 @@
             // 
             this.xfbinLabel.AutoSize = true;
             this.xfbinLabel.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.xfbinLabel.Location = new System.Drawing.Point(37, 17);
+            this.xfbinLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.142858F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xfbinLabel.Location = new System.Drawing.Point(32, 51);
             this.xfbinLabel.Name = "xfbinLabel";
-            this.xfbinLabel.Size = new System.Drawing.Size(251, 25);
+            this.xfbinLabel.Size = new System.Drawing.Size(281, 25);
             this.xfbinLabel.TabIndex = 7;
             this.xfbinLabel.Text = "Open the texture file (.xfbin)";
             // 
             // exportModdedDDSButton
             // 
-            this.exportModdedDDSButton.Location = new System.Drawing.Point(253, 706);
+            this.exportModdedDDSButton.Location = new System.Drawing.Point(248, 740);
             this.exportModdedDDSButton.Name = "exportModdedDDSButton";
             this.exportModdedDDSButton.Size = new System.Drawing.Size(250, 62);
             this.exportModdedDDSButton.TabIndex = 9;
@@ -132,7 +139,7 @@
             // 
             this.compressionLabel1.AutoSize = true;
             this.compressionLabel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.compressionLabel1.Location = new System.Drawing.Point(847, 109);
+            this.compressionLabel1.Location = new System.Drawing.Point(842, 143);
             this.compressionLabel1.Name = "compressionLabel1";
             this.compressionLabel1.Size = new System.Drawing.Size(201, 25);
             this.compressionLabel1.TabIndex = 12;
@@ -151,7 +158,7 @@
             // 
             // moddedtexBrowse
             // 
-            this.moddedtexBrowse.Location = new System.Drawing.Point(849, 378);
+            this.moddedtexBrowse.Location = new System.Drawing.Point(844, 412);
             this.moddedtexBrowse.Name = "moddedtexBrowse";
             this.moddedtexBrowse.Size = new System.Drawing.Size(199, 50);
             this.moddedtexBrowse.TabIndex = 13;
@@ -161,7 +168,7 @@
             // 
             // xfbinBrowse
             // 
-            this.xfbinBrowse.Location = new System.Drawing.Point(849, 40);
+            this.xfbinBrowse.Location = new System.Drawing.Point(844, 74);
             this.xfbinBrowse.Name = "xfbinBrowse";
             this.xfbinBrowse.Size = new System.Drawing.Size(199, 50);
             this.xfbinBrowse.TabIndex = 14;
@@ -172,7 +179,7 @@
             // originalTexCompression
             // 
             this.originalTexCompression.AutoSize = true;
-            this.originalTexCompression.Location = new System.Drawing.Point(847, 137);
+            this.originalTexCompression.Location = new System.Drawing.Point(842, 171);
             this.originalTexCompression.Name = "originalTexCompression";
             this.originalTexCompression.Size = new System.Drawing.Size(59, 25);
             this.originalTexCompression.TabIndex = 15;
@@ -180,7 +187,7 @@
             // 
             // exportXFBINButton
             // 
-            this.exportXFBINButton.Location = new System.Drawing.Point(592, 706);
+            this.exportXFBINButton.Location = new System.Drawing.Point(587, 740);
             this.exportXFBINButton.Name = "exportXFBINButton";
             this.exportXFBINButton.Size = new System.Drawing.Size(225, 62);
             this.exportXFBINButton.TabIndex = 16;
@@ -192,7 +199,7 @@
             // 
             this.compressionLabel2.AutoSize = true;
             this.compressionLabel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.compressionLabel2.Location = new System.Drawing.Point(844, 442);
+            this.compressionLabel2.Location = new System.Drawing.Point(839, 476);
             this.compressionLabel2.Name = "compressionLabel2";
             this.compressionLabel2.Size = new System.Drawing.Size(201, 25);
             this.compressionLabel2.TabIndex = 17;
@@ -201,7 +208,7 @@
             // moddedTexCompression
             // 
             this.moddedTexCompression.AutoSize = true;
-            this.moddedTexCompression.Location = new System.Drawing.Point(847, 473);
+            this.moddedTexCompression.Location = new System.Drawing.Point(842, 507);
             this.moddedTexCompression.Name = "moddedTexCompression";
             this.moddedTexCompression.Size = new System.Drawing.Size(59, 25);
             this.moddedTexCompression.TabIndex = 18;
@@ -211,7 +218,7 @@
             // 
             this.exportsettingLabel.AutoSize = true;
             this.exportsettingLabel.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.exportsettingLabel.Location = new System.Drawing.Point(38, 442);
+            this.exportsettingLabel.Location = new System.Drawing.Point(33, 476);
             this.exportsettingLabel.Name = "exportsettingLabel";
             this.exportsettingLabel.Size = new System.Drawing.Size(146, 25);
             this.exportsettingLabel.TabIndex = 21;
@@ -221,7 +228,7 @@
             // 
             this.selectTexBox.FormattingEnabled = true;
             this.selectTexBox.ItemHeight = 24;
-            this.selectTexBox.Location = new System.Drawing.Point(37, 121);
+            this.selectTexBox.Location = new System.Drawing.Point(32, 155);
             this.selectTexBox.Name = "selectTexBox";
             this.selectTexBox.Size = new System.Drawing.Size(346, 196);
             this.selectTexBox.TabIndex = 22;
@@ -230,7 +237,7 @@
             // 
             this.selectTexLabel.AutoSize = true;
             this.selectTexLabel.BackColor = System.Drawing.SystemColors.Control;
-            this.selectTexLabel.Location = new System.Drawing.Point(35, 93);
+            this.selectTexLabel.Location = new System.Drawing.Point(30, 127);
             this.selectTexLabel.Name = "selectTexLabel";
             this.selectTexLabel.Size = new System.Drawing.Size(131, 25);
             this.selectTexLabel.TabIndex = 23;
@@ -240,24 +247,24 @@
             // 
             this.previewLabel1.AutoSize = true;
             this.previewLabel1.BackColor = System.Drawing.SystemColors.Control;
-            this.previewLabel1.Location = new System.Drawing.Point(484, 93);
+            this.previewLabel1.Location = new System.Drawing.Point(479, 127);
             this.previewLabel1.Name = "previewLabel1";
             this.previewLabel1.Size = new System.Drawing.Size(87, 25);
             this.previewLabel1.TabIndex = 24;
             this.previewLabel1.Text = "Preview:";
             // 
-            // texturePreview1
+            // texturePreview2
             // 
-            this.texturePreview1.Location = new System.Drawing.Point(475, 473);
-            this.texturePreview1.Name = "texturePreview1";
-            this.texturePreview1.Size = new System.Drawing.Size(303, 134);
-            this.texturePreview1.TabIndex = 25;
-            this.texturePreview1.TabStop = false;
+            this.texturePreview2.Location = new System.Drawing.Point(470, 507);
+            this.texturePreview2.Name = "texturePreview2";
+            this.texturePreview2.Size = new System.Drawing.Size(303, 134);
+            this.texturePreview2.TabIndex = 25;
+            this.texturePreview2.TabStop = false;
             // 
             // exportOriginalDDS
             // 
             this.exportOriginalDDS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.514286F);
-            this.exportOriginalDDS.Location = new System.Drawing.Point(852, 247);
+            this.exportOriginalDDS.Location = new System.Drawing.Point(847, 281);
             this.exportOriginalDDS.Name = "exportOriginalDDS";
             this.exportOriginalDDS.Size = new System.Drawing.Size(190, 49);
             this.exportOriginalDDS.TabIndex = 26;
@@ -267,7 +274,7 @@
             // exportNUT
             // 
             this.exportNUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.542858F);
-            this.exportNUT.Location = new System.Drawing.Point(852, 302);
+            this.exportNUT.Location = new System.Drawing.Point(847, 336);
             this.exportNUT.Name = "exportNUT";
             this.exportNUT.Size = new System.Drawing.Size(190, 37);
             this.exportNUT.TabIndex = 27;
@@ -281,7 +288,7 @@
             "DXT1",
             "DXT1a (Transparency)",
             "DXT5"});
-            this.exportSettingBox.Location = new System.Drawing.Point(177, 473);
+            this.exportSettingBox.Location = new System.Drawing.Point(172, 507);
             this.exportSettingBox.Name = "exportSettingBox";
             this.exportSettingBox.Size = new System.Drawing.Size(253, 32);
             this.exportSettingBox.TabIndex = 28;
@@ -289,7 +296,7 @@
             // 
             // mipMapSetting
             // 
-            this.mipMapSetting.Location = new System.Drawing.Point(177, 515);
+            this.mipMapSetting.Location = new System.Drawing.Point(172, 549);
             this.mipMapSetting.Maximum = 11;
             this.mipMapSetting.Name = "mipMapSetting";
             this.mipMapSetting.Size = new System.Drawing.Size(253, 80);
@@ -298,7 +305,7 @@
             // compressSettingLabel
             // 
             this.compressSettingLabel.AutoSize = true;
-            this.compressSettingLabel.Location = new System.Drawing.Point(37, 473);
+            this.compressSettingLabel.Location = new System.Drawing.Point(32, 507);
             this.compressSettingLabel.Name = "compressSettingLabel";
             this.compressSettingLabel.Size = new System.Drawing.Size(134, 25);
             this.compressSettingLabel.TabIndex = 30;
@@ -307,7 +314,7 @@
             // mipSettingLabel
             // 
             this.mipSettingLabel.AutoSize = true;
-            this.mipSettingLabel.Location = new System.Drawing.Point(37, 515);
+            this.mipSettingLabel.Location = new System.Drawing.Point(32, 549);
             this.mipSettingLabel.Name = "mipSettingLabel";
             this.mipSettingLabel.Size = new System.Drawing.Size(104, 25);
             this.mipSettingLabel.TabIndex = 31;
@@ -316,7 +323,7 @@
             // mipLabelMax
             // 
             this.mipLabelMax.AutoSize = true;
-            this.mipLabelMax.Location = new System.Drawing.Point(397, 559);
+            this.mipLabelMax.Location = new System.Drawing.Point(392, 593);
             this.mipLabelMax.Name = "mipLabelMax";
             this.mipLabelMax.Size = new System.Drawing.Size(34, 25);
             this.mipLabelMax.TabIndex = 32;
@@ -325,25 +332,25 @@
             // mipLabelMin
             // 
             this.mipLabelMin.AutoSize = true;
-            this.mipLabelMin.Location = new System.Drawing.Point(183, 559);
+            this.mipLabelMin.Location = new System.Drawing.Point(178, 593);
             this.mipLabelMin.Name = "mipLabelMin";
             this.mipLabelMin.Size = new System.Drawing.Size(23, 25);
             this.mipLabelMin.TabIndex = 33;
             this.mipLabelMin.Text = "1";
             // 
-            // texturePreview2
+            // texturePreview1
             // 
-            this.texturePreview2.Location = new System.Drawing.Point(453, 121);
-            this.texturePreview2.Name = "texturePreview2";
-            this.texturePreview2.Size = new System.Drawing.Size(303, 134);
-            this.texturePreview2.TabIndex = 35;
-            this.texturePreview2.TabStop = false;
+            this.texturePreview1.Location = new System.Drawing.Point(448, 155);
+            this.texturePreview1.Name = "texturePreview1";
+            this.texturePreview1.Size = new System.Drawing.Size(303, 134);
+            this.texturePreview1.TabIndex = 35;
+            this.texturePreview1.TabStop = false;
             // 
             // previewLabel2
             // 
             this.previewLabel2.AutoSize = true;
             this.previewLabel2.BackColor = System.Drawing.SystemColors.Control;
-            this.previewLabel2.Location = new System.Drawing.Point(496, 442);
+            this.previewLabel2.Location = new System.Drawing.Point(491, 476);
             this.previewLabel2.Name = "previewLabel2";
             this.previewLabel2.Size = new System.Drawing.Size(87, 25);
             this.previewLabel2.TabIndex = 34;
@@ -352,7 +359,7 @@
             // mipMapCountLabel1
             // 
             this.mipMapCountLabel1.AutoSize = true;
-            this.mipMapCountLabel1.Location = new System.Drawing.Point(828, 204);
+            this.mipMapCountLabel1.Location = new System.Drawing.Point(823, 238);
             this.mipMapCountLabel1.Name = "mipMapCountLabel1";
             this.mipMapCountLabel1.Size = new System.Drawing.Size(59, 25);
             this.mipMapCountLabel1.TabIndex = 37;
@@ -362,7 +369,7 @@
             // 
             this.mipMapLabel1.AutoSize = true;
             this.mipMapLabel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.mipMapLabel1.Location = new System.Drawing.Point(828, 176);
+            this.mipMapLabel1.Location = new System.Drawing.Point(823, 210);
             this.mipMapLabel1.Name = "mipMapLabel1";
             this.mipMapLabel1.Size = new System.Drawing.Size(104, 25);
             this.mipMapLabel1.TabIndex = 36;
@@ -372,7 +379,7 @@
             // 
             this.resolutionLabel1.AutoSize = true;
             this.resolutionLabel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.resolutionLabel1.Location = new System.Drawing.Point(964, 176);
+            this.resolutionLabel1.Location = new System.Drawing.Point(959, 210);
             this.resolutionLabel1.Name = "resolutionLabel1";
             this.resolutionLabel1.Size = new System.Drawing.Size(109, 25);
             this.resolutionLabel1.TabIndex = 38;
@@ -381,7 +388,7 @@
             // resolutionCheck1
             // 
             this.resolutionCheck1.AutoSize = true;
-            this.resolutionCheck1.Location = new System.Drawing.Point(964, 204);
+            this.resolutionCheck1.Location = new System.Drawing.Point(959, 238);
             this.resolutionCheck1.Name = "resolutionCheck1";
             this.resolutionCheck1.Size = new System.Drawing.Size(59, 25);
             this.resolutionCheck1.TabIndex = 39;
@@ -389,7 +396,7 @@
             // 
             // replaceButton
             // 
-            this.replaceButton.Location = new System.Drawing.Point(453, 271);
+            this.replaceButton.Location = new System.Drawing.Point(448, 305);
             this.replaceButton.Name = "replaceButton";
             this.replaceButton.Size = new System.Drawing.Size(290, 48);
             this.replaceButton.TabIndex = 40;
@@ -399,7 +406,7 @@
             // mipMapCountLabel2
             // 
             this.mipMapCountLabel2.AutoSize = true;
-            this.mipMapCountLabel2.Location = new System.Drawing.Point(825, 543);
+            this.mipMapCountLabel2.Location = new System.Drawing.Point(820, 577);
             this.mipMapCountLabel2.Name = "mipMapCountLabel2";
             this.mipMapCountLabel2.Size = new System.Drawing.Size(59, 25);
             this.mipMapCountLabel2.TabIndex = 42;
@@ -409,7 +416,7 @@
             // 
             this.mipMapLabel2.AutoSize = true;
             this.mipMapLabel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.mipMapLabel2.Location = new System.Drawing.Point(825, 515);
+            this.mipMapLabel2.Location = new System.Drawing.Point(820, 549);
             this.mipMapLabel2.Name = "mipMapLabel2";
             this.mipMapLabel2.Size = new System.Drawing.Size(104, 25);
             this.mipMapLabel2.TabIndex = 41;
@@ -418,7 +425,7 @@
             // resolutionCheck2
             // 
             this.resolutionCheck2.AutoSize = true;
-            this.resolutionCheck2.Location = new System.Drawing.Point(964, 543);
+            this.resolutionCheck2.Location = new System.Drawing.Point(959, 577);
             this.resolutionCheck2.Name = "resolutionCheck2";
             this.resolutionCheck2.Size = new System.Drawing.Size(59, 25);
             this.resolutionCheck2.TabIndex = 44;
@@ -428,7 +435,7 @@
             // 
             this.resolutionLabel2.AutoSize = true;
             this.resolutionLabel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.resolutionLabel2.Location = new System.Drawing.Point(964, 515);
+            this.resolutionLabel2.Location = new System.Drawing.Point(959, 549);
             this.resolutionLabel2.Name = "resolutionLabel2";
             this.resolutionLabel2.Size = new System.Drawing.Size(109, 25);
             this.resolutionLabel2.TabIndex = 43;
@@ -436,7 +443,7 @@
             // 
             // originaltexBrowse
             // 
-            this.originaltexBrowse.Location = new System.Drawing.Point(850, 636);
+            this.originaltexBrowse.Location = new System.Drawing.Point(845, 670);
             this.originaltexBrowse.Name = "originaltexBrowse";
             this.originaltexBrowse.Size = new System.Drawing.Size(199, 50);
             this.originaltexBrowse.TabIndex = 0;
@@ -448,26 +455,61 @@
             // 
             this.originaltexLabel.AutoSize = true;
             this.originaltexLabel.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.originaltexLabel.Location = new System.Drawing.Point(38, 612);
+            this.originaltexLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.142858F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.originaltexLabel.Location = new System.Drawing.Point(33, 646);
             this.originaltexLabel.Name = "originaltexLabel";
-            this.originaltexLabel.Size = new System.Drawing.Size(349, 25);
+            this.originaltexLabel.Size = new System.Drawing.Size(390, 25);
             this.originaltexLabel.TabIndex = 1;
             this.originaltexLabel.Text = "Open original texture\'s image file (.dds)";
             // 
             // originaltexPathBox
             // 
             this.originaltexPathBox.AllowDrop = true;
-            this.originaltexPathBox.Location = new System.Drawing.Point(38, 646);
+            this.originaltexPathBox.Location = new System.Drawing.Point(33, 680);
             this.originaltexPathBox.Name = "originaltexPathBox";
             this.originaltexPathBox.Size = new System.Drawing.Size(771, 29);
             this.originaltexPathBox.TabIndex = 2;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1109, 42);
+            this.menuStrip1.TabIndex = 45;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // helpToolStripMenuItem1
+            // 
+            this.helpToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator6,
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 34);
+            this.helpToolStripMenuItem1.Text = "&Help";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(312, 6);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(315, 40);
+            this.aboutToolStripMenuItem.Text = "&About...";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // StoneMask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1109, 791);
+            this.ClientSize = new System.Drawing.Size(1109, 821);
             this.Controls.Add(this.resolutionCheck2);
             this.Controls.Add(this.resolutionLabel2);
             this.Controls.Add(this.mipMapCountLabel2);
@@ -477,7 +519,7 @@
             this.Controls.Add(this.resolutionLabel1);
             this.Controls.Add(this.mipMapCountLabel1);
             this.Controls.Add(this.mipMapLabel1);
-            this.Controls.Add(this.texturePreview2);
+            this.Controls.Add(this.texturePreview1);
             this.Controls.Add(this.previewLabel2);
             this.Controls.Add(this.mipLabelMin);
             this.Controls.Add(this.mipLabelMax);
@@ -487,7 +529,7 @@
             this.Controls.Add(this.exportSettingBox);
             this.Controls.Add(this.exportNUT);
             this.Controls.Add(this.exportOriginalDDS);
-            this.Controls.Add(this.texturePreview1);
+            this.Controls.Add(this.texturePreview2);
             this.Controls.Add(this.previewLabel1);
             this.Controls.Add(this.selectTexLabel);
             this.Controls.Add(this.selectTexBox);
@@ -507,13 +549,17 @@
             this.Controls.Add(this.originaltexPathBox);
             this.Controls.Add(this.originaltexLabel);
             this.Controls.Add(this.originaltexBrowse);
+            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "StoneMask";
             this.Text = "Stone Mask v1.0 - JoJo ASB/EoH Texture Editor";
-            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturePreview2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -538,7 +584,7 @@
         private System.Windows.Forms.ListBox selectTexBox;
         private System.Windows.Forms.Label selectTexLabel;
         private System.Windows.Forms.Label previewLabel1;
-        private System.Windows.Forms.PictureBox texturePreview1;
+        private System.Windows.Forms.PictureBox texturePreview2;
         private System.Windows.Forms.TextBox moddedTexPathBox;
         private System.Windows.Forms.Button exportOriginalDDS;
         private System.Windows.Forms.Button exportNUT;
@@ -548,7 +594,7 @@
         private System.Windows.Forms.Label mipSettingLabel;
         private System.Windows.Forms.Label mipLabelMax;
         private System.Windows.Forms.Label mipLabelMin;
-        private System.Windows.Forms.PictureBox texturePreview2;
+        private System.Windows.Forms.PictureBox texturePreview1;
         private System.Windows.Forms.Label previewLabel2;
         private System.Windows.Forms.Label mipMapCountLabel1;
         private System.Windows.Forms.Label mipMapLabel1;
@@ -562,6 +608,10 @@
         private System.Windows.Forms.Button originaltexBrowse;
         private System.Windows.Forms.Label originaltexLabel;
         private System.Windows.Forms.TextBox originaltexPathBox;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

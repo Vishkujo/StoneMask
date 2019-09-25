@@ -189,6 +189,7 @@ namespace StoneMask
             {
                 moddedTexPathBox.Text = openModdedTexDialog.FileName;
                 moddedTexOpen = true;
+                texturePreview2.Image = null;
                 string moddedFormat = "None";
                 // Check if file is dds or png
                 if (DDSFile.IsDDSFile(openModdedTexDialog.FileName) == true)
@@ -206,7 +207,9 @@ namespace StoneMask
                 else
                 {
                     //PNG format
-                    moddedTexCompression.Text = moddedFormat;                    
+                    moddedTexCompression.Text = moddedFormat;
+                    texturePreview2.Image = new Bitmap(openModdedTexDialog.FileName);
+                    texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
                 }
             }
         }
@@ -239,16 +242,14 @@ namespace StoneMask
         }
         
         //Convert the png/export as dds
-        public void Convert()
+        public void CompressDDS()
         {
             Surface newDDS = Surface.LoadFromFile(openModdedTexDialog.FileName, true);
             MipmapFilter MipmapFilter = MipmapFilter.Triangle;
             CompressionFormat texFormat = new CompressionFormat();
             if (exportSettingBox.SelectedIndex == 0)
-                texFormat = CompressionFormat.DXT1;
-            else if (exportSettingBox.SelectedIndex == 1)
                 texFormat = CompressionFormat.DXT1a;
-            else if (exportSettingBox.SelectedIndex == 2)
+            else if (exportSettingBox.SelectedIndex == 1)
                 texFormat = CompressionFormat.DXT5;
             Compressor compress;
             compress = new Compressor();
@@ -271,7 +272,7 @@ namespace StoneMask
             if (originalTexOpen == true && moddedTexOpen == true)
             {
                 //Convert the png/export as dds
-                Convert();
+                CompressDDS();
                 MessageBox.Show("Success. Texture saved as \"new.dds\" in the program folder.");
             }
             else
@@ -288,6 +289,11 @@ namespace StoneMask
             {
                 saveXfbin = true;
             }
+        }
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Created by SutandoTsukai181 and Vish (@VEpicAGE)");
         }
     }
 }
