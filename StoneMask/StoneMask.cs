@@ -32,6 +32,20 @@ namespace StoneMask
         public int textureCount = 0;
         public int nameCount = 0;
 
+        // Gets compression format from NTP3 header
+        public string NTP3Format(int formatByte)
+        {
+            if (formatByte == 0x0)
+            {
+                return "DXT1";
+            }
+            else if (formatByte == 0x2)
+            {
+                return "DXT5";
+            }
+            else return "Unknown format";
+        }
+
         // Open XFBIN (1st browse button)
         private void XfbinBrowse_Click(object sender, EventArgs e)
         {
@@ -68,6 +82,7 @@ namespace StoneMask
                                 //int textureSize3 = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
                                 int textureSize = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
                                 int mipCount = fileBytes[x + 0x21];
+                                string format = NTP3Format(fileBytes[x + 0x23]);
                                 int resX = fileBytes[x + 0x24] * 0x100 + fileBytes[x + 0x25];
                                 int resY = fileBytes[x + 0x26] * 0x100 + fileBytes[x + 0x27];
 
@@ -82,6 +97,7 @@ namespace StoneMask
                                     NTP3Size = ntp3Size,
                                     TexSize = textureSize,
                                     MipMaps = mipCount,
+                                    Format = format,
                                     ResX = resX,
                                     ResY = resY,
                                     TexFile = textureFile,
@@ -177,10 +193,21 @@ namespace StoneMask
                                 selectTexBox.Items.Remove(nameInList.TexName);
                         }
                     }
+                    selectTexBox.SelectedIndex = 0;
+                    selectTexBox.Focus();
                 }
             }
         }
-                       
+
+        // Update texture related content whenever the selected item changes
+        private void SelectTexBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int x = selectTexBox.SelectedIndex;
+            originalTexCompression.Text = texList[x].Format;
+            mipMapCountLabel1.Text = texList[x].MipMaps.ToString();
+            resolutionCheck1.Text = texList[x].ResX.ToString() + "x" + texList[x].ResY.ToString();
+        }
+
         // Open modded texture (2nd browse button)
         private void ModdedTexBrowse_Click(object sender, EventArgs e)
         {
