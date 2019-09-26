@@ -279,7 +279,7 @@ namespace StoneMask
                 moddedTexPathBox.Text = openModdedTexDialog.FileName;
                 moddedTexOpen = true;
                 texturePreview2.Image = null;
-                string moddedFormat = "None";
+                moddedFormat = "None";
                 // Check if file is dds or png
                 if (DDSFile.IsDDSFile(openModdedTexDialog.FileName) == true)
                 {
@@ -303,7 +303,7 @@ namespace StoneMask
                     mipMapCountLabel2.Text = moddedMipCount.ToString();
                     texturePreview2.Image = newPNG;
                     resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
-                    texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
+                    texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
 
                     //Dispose
                     pngStream.Dispose();
@@ -316,7 +316,7 @@ namespace StoneMask
                     mipMapCountLabel2.Text = "None";
                     texturePreview2.Image = new Bitmap(openModdedTexDialog.FileName);
                     resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
-                    texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
+                    texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
                 }
             }
         }
