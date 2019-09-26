@@ -65,9 +65,6 @@ namespace StoneMask
             this.mipMapLabel2 = new System.Windows.Forms.Label();
             this.resolutionCheck2 = new System.Windows.Forms.Label();
             this.resolutionLabel2 = new System.Windows.Forms.Label();
-            this.originaltexBrowse = new System.Windows.Forms.Button();
-            this.originaltexLabel = new System.Windows.Forms.Label();
-            this.originaltexPathBox = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -126,7 +123,7 @@ namespace StoneMask
             // 
             // exportModdedDDSButton
             // 
-            this.exportModdedDDSButton.Location = new System.Drawing.Point(248, 740);
+            this.exportModdedDDSButton.Location = new System.Drawing.Point(248, 688);
             this.exportModdedDDSButton.Name = "exportModdedDDSButton";
             this.exportModdedDDSButton.Size = new System.Drawing.Size(250, 62);
             this.exportModdedDDSButton.TabIndex = 9;
@@ -186,7 +183,7 @@ namespace StoneMask
             // 
             // exportXFBINButton
             // 
-            this.exportXFBINButton.Location = new System.Drawing.Point(587, 740);
+            this.exportXFBINButton.Location = new System.Drawing.Point(587, 688);
             this.exportXFBINButton.Name = "exportXFBINButton";
             this.exportXFBINButton.Size = new System.Drawing.Size(226, 62);
             this.exportXFBINButton.TabIndex = 16;
@@ -414,35 +411,6 @@ namespace StoneMask
             this.resolutionLabel2.TabIndex = 43;
             this.resolutionLabel2.Text = "Resolution:";
             // 
-            // originaltexBrowse
-            // 
-            this.originaltexBrowse.Location = new System.Drawing.Point(846, 670);
-            this.originaltexBrowse.Name = "originaltexBrowse";
-            this.originaltexBrowse.Size = new System.Drawing.Size(199, 50);
-            this.originaltexBrowse.TabIndex = 0;
-            this.originaltexBrowse.Text = "Browse";
-            this.originaltexBrowse.UseVisualStyleBackColor = true;
-            this.originaltexBrowse.Click += new System.EventHandler(this.OriginalTexBrowse_Click);
-            // 
-            // originaltexLabel
-            // 
-            this.originaltexLabel.AutoSize = true;
-            this.originaltexLabel.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.originaltexLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.142858F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.originaltexLabel.Location = new System.Drawing.Point(33, 646);
-            this.originaltexLabel.Name = "originaltexLabel";
-            this.originaltexLabel.Size = new System.Drawing.Size(390, 25);
-            this.originaltexLabel.TabIndex = 1;
-            this.originaltexLabel.Text = "Open original texture\'s image file (.dds)";
-            // 
-            // originaltexPathBox
-            // 
-            this.originaltexPathBox.AllowDrop = true;
-            this.originaltexPathBox.Location = new System.Drawing.Point(33, 680);
-            this.originaltexPathBox.Name = "originaltexPathBox";
-            this.originaltexPathBox.Size = new System.Drawing.Size(771, 29);
-            this.originaltexPathBox.TabIndex = 2;
-            // 
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ScrollBar;
@@ -452,7 +420,7 @@ namespace StoneMask
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1110, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1110, 38);
             this.menuStrip1.TabIndex = 45;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -462,7 +430,7 @@ namespace StoneMask
             this.toolStripSeparator6,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 38);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 34);
             this.helpToolStripMenuItem1.Text = "&Help";
             // 
             // toolStripSeparator6
@@ -502,7 +470,7 @@ namespace StoneMask
             this.AutoScaleDimensions = new System.Drawing.SizeF(168F, 168F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1110, 820);
+            this.ClientSize = new System.Drawing.Size(1110, 764);
             this.Controls.Add(this.resolutionCheck2);
             this.Controls.Add(this.resolutionLabel2);
             this.Controls.Add(this.mipMapCountLabel2);
@@ -538,9 +506,6 @@ namespace StoneMask
             this.Controls.Add(this.xfbinLabel);
             this.Controls.Add(this.moddedTexPathBox);
             this.Controls.Add(this.moddedtexLabel);
-            this.Controls.Add(this.originaltexPathBox);
-            this.Controls.Add(this.originaltexLabel);
-            this.Controls.Add(this.originaltexBrowse);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -594,9 +559,6 @@ namespace StoneMask
         private System.Windows.Forms.Label mipMapLabel2;
         private System.Windows.Forms.Label resolutionCheck2;
         private System.Windows.Forms.Label resolutionLabel2;
-        private System.Windows.Forms.Button originaltexBrowse;
-        private System.Windows.Forms.Label originaltexLabel;
-        private System.Windows.Forms.TextBox originaltexPathBox;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;

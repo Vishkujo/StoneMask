@@ -23,9 +23,8 @@ namespace StoneMask
         }
 
         // variables
-        public bool originalTexOpen;
-        public bool moddedTexOpen;
         public bool xfbinOpen;
+        public bool moddedTexOpen;        
         public string moddedFormat;
         public bool saveXfbin = false;
         public List<byte> fileBytes = new List<byte>();
@@ -129,12 +128,14 @@ namespace StoneMask
                     }
 
                     // Check if file contains textures
-                    if (texList.Count == 0)
+                    if (textureCount == 0)
                     {
                         selectTexBox.Items.Clear();
                         mipMapCountLabel1.Text = "None";
                         resolutionCheck1.Text = "None";
                         originalTexCompression.Text = "None";
+                        texturePreview1.Image = null;
+                        xfbinOpen = false;
                         MessageBox.Show("This file does not contain any textures. Please open another one.");
                         return;
                     }
@@ -241,10 +242,16 @@ namespace StoneMask
             mipMapSetting.Value = texList[x].MipMaps;
             mipSliderValue.Text = mipMapSetting.Value.ToString();
             byte[] texFileArray = texList[x].TexFile.ToArray();
-
+            
             // Convert dds to png for preview
             texturePreview1.Image = DDSImage.ConvertDDSToPng(texFileArray);
             texturePreview1.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            //Export settings
+            if (texList[x].Format == "DXT1")
+                exportSettingBox.SelectedIndex = 0;
+            else if (texList[x].Format == "DXT5")
+                exportSettingBox.SelectedIndex = 1;
         }
 
         // Open modded texture (2nd browse button)
@@ -299,33 +306,6 @@ namespace StoneMask
             }
         }
 
-        // Open original texture (3rd browse button)
-        public void OriginalTexBrowse_Click(object sender, EventArgs e)
-        {
-            openOriginalTexDialog.Multiselect = false;
-            if (openOriginalTexDialog.ShowDialog() == DialogResult.OK)
-            {
-                originaltexPathBox.Text = openOriginalTexDialog.FileName;
-                // Get original DDS data
-                DDSContainer originalDDS = DDSFile.Read(openOriginalTexDialog.FileName);
-                string originalFormat = originalDDS.Format.ToString();
-                int originalMMCount = originalDDS.MipChains[0].Count;
-                if (originalFormat == "BC3_UNorm")
-                {
-                    originalFormat = "DXT5";
-                    exportSettingBox.SelectedIndex = 2;
-                }
-                else if (originalFormat == "BC1_UNorm")
-                {
-                    originalFormat = "DXT1";
-                    exportSettingBox.SelectedIndex = 0;
-                }
-                originalTexOpen = true;
-                originalTexCompression.Text = originalFormat;
-                mipMapCountLabel1.Text = originalMMCount.ToString();
-            }
-        }
-
         //Convert the png/export as dds
         public void CompressDDS()
         {
@@ -339,7 +319,7 @@ namespace StoneMask
             Compressor compress = new Compressor();
             compress.Input.SetData(newDDS);
             compress.Compression.Format = texFormat;
-            compress.Input.SetMipmapGeneration(true, 12);
+            compress.Input.SetMipmapGeneration(true, mipMapSetting.Value);
             compress.Input.MipmapFilter = MipmapFilter;
             // Removes the DDS header for the save xfbin button
             if (saveXfbin == true)
@@ -353,7 +333,7 @@ namespace StoneMask
         private void DDSSave_Click(object sender, EventArgs e)
         {
             // Check if both the original texture and modded texture are open
-            if (originalTexOpen == true && moddedTexOpen == true)
+            if (xfbinOpen == true && moddedTexOpen == true)
             {
                 //Convert the png/export as dds
                 CompressDDS();
