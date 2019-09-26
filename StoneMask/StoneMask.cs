@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -67,7 +67,8 @@ namespace StoneMask
                     {
                         fileBytes.Add(xfbinFile[a]);
                     }
-                                                          
+                    Array.Clear(xfbinFile, 0, xfbinFile.Length);
+
                     //Generate list of NTP3 files
                     {
                         for (int x = 0; x < fileBytes.Count - 3; x++)
@@ -92,9 +93,19 @@ namespace StoneMask
                                 else if (format == "DXT5")
                                     DXT = 0x35;
 
+                                byte[] bytesY = BitConverter.GetBytes(resY);
+                                byte[] bytesX = BitConverter.GetBytes(resX);
+                                byte y1, y2, x1, x2;
+                                y1 = y2 = x1 = x2 = 0x00;
+
+                                y1 = bytesY[0];
+                                y2 = bytesY[1];
+                                x1 = bytesX[0];
+                                x2 = bytesX[1];
+
                                 // Create header
-                                List<byte> ddsHeader = new List<byte>() { 0x44, 0x44, 0x53, 0x20, 0x7C, 0x00, 0x00, 0x00, 0x07, 0x10, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00,
-                                                              0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                List<byte> ddsHeader = new List<byte>() { 0x44, 0x44, 0x53, 0x20, 0x7C, 0x00, 0x00, 0x00, 0x07, 0x10, 0x00, 0x00, y1, y2, 0x00, 0x00,
+                                                              x1, x2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00,
@@ -107,10 +118,15 @@ namespace StoneMask
                                 { 
                                     textureFile.Add(ddsHeader[b]);
                                 }
-                                for (int a = texStart; a < textureSize + 1; a++)
+                                for (int a = 0; a < textureSize; a++)
                                 {
-                                    textureFile.Add(xfbinFile[a]);
+                                    textureFile.Add(fileBytes[texStart + a]);
                                 }
+
+                                Bitmap preview;
+                                if (format == "Unknown format") preview = null;
+                                else preview = DDSImage.ConvertDDSToPng(textureFile.ToArray());
+
                                 texList.Add(new NUT
                                 {
                                     FileSize = fileSize,
@@ -121,6 +137,7 @@ namespace StoneMask
                                     ResX = resX,
                                     ResY = resY,
                                     TexFile = textureFile,
+                                    Preview = preview
                                 });
                                 textureCount++;
                             }
@@ -241,11 +258,10 @@ namespace StoneMask
             resolutionCheck1.Text = texList[x].ResX.ToString() + "x" + texList[x].ResY.ToString();
             mipMapSetting.Value = texList[x].MipMaps;
             mipSliderValue.Text = mipMapSetting.Value.ToString();
-            byte[] texFileArray = texList[x].TexFile.ToArray();
             
             // Convert dds to png for preview
-            texturePreview1.Image = DDSImage.ConvertDDSToPng(texFileArray);
-            texturePreview1.SizeMode = PictureBoxSizeMode.StretchImage;
+            texturePreview1.Image = texList[x].Preview;
+            texturePreview1.SizeMode = PictureBoxSizeMode.Zoom;
 
             //Export settings
             if (texList[x].Format == "DXT1")
