@@ -68,7 +68,7 @@ namespace StoneMask
                     {
                         fileBytes.Add(xfbinFile[a]);
                     }
-
+                                                          
                     //Generate list of NTP3 files
                     {
                         for (int x = 0; x < fileBytes.Count - 3; x++)
@@ -86,8 +86,28 @@ namespace StoneMask
                                 string format = NTP3Format(fileBytes[x + 0x23]);
                                 int resX = fileBytes[x + 0x24] * 0x100 + fileBytes[x + 0x25];
                                 int resY = fileBytes[x + 0x26] * 0x100 + fileBytes[x + 0x27];
+                                byte DXT = new byte();
 
+                                if (format == "DXT1")
+                                    DXT = 0x31;
+                                else if (format == "DXT5")
+                                    DXT = 0x35;
+
+                                // Create header
+                                List<byte> ddsHeader = new List<byte>() { 0x44, 0x44, 0x53, 0x20, 0x7C, 0x00, 0x00, 0x00, 0x07, 0x10, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00,
+                                                              0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00,
+                                                              0x04, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, DXT, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
+                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+                                
                                 List<byte> textureFile = new List<byte>();
+                                for (int b = 0; b < ddsHeader.Count; b++)
+                                { 
+                                    textureFile.Add(ddsHeader[b]);
+                                }
                                 for (int a = texStart; a < textureSize + 1; a++)
                                 {
                                     textureFile.Add(xfbinFile[a]);
@@ -220,6 +240,11 @@ namespace StoneMask
             resolutionCheck1.Text = texList[x].ResX.ToString() + "x" + texList[x].ResY.ToString();
             mipMapSetting.Value = texList[x].MipMaps;
             mipSliderValue.Text = mipMapSetting.Value.ToString();
+            byte[] texFileArray = texList[x].TexFile.ToArray();
+
+            // Convert dds to png for preview
+            texturePreview1.Image = DDSImage.ConvertDDSToPng(texFileArray);
+            texturePreview1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         // Open modded texture (2nd browse button)
@@ -300,7 +325,7 @@ namespace StoneMask
                 mipMapCountLabel1.Text = originalMMCount.ToString();
             }
         }
-        
+
         //Convert the png/export as dds
         public void CompressDDS()
         {

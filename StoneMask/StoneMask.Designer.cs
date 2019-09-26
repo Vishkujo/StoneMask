@@ -257,7 +257,7 @@ namespace StoneMask
             // 
             this.texturePreview2.Location = new System.Drawing.Point(470, 507);
             this.texturePreview2.Name = "texturePreview2";
-            this.texturePreview2.Size = new System.Drawing.Size(334, 144);
+            this.texturePreview2.Size = new System.Drawing.Size(256, 144);
             this.texturePreview2.TabIndex = 25;
             this.texturePreview2.TabStop = false;
             // 
@@ -452,7 +452,7 @@ namespace StoneMask
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1110, 38);
+            this.menuStrip1.Size = new System.Drawing.Size(1110, 42);
             this.menuStrip1.TabIndex = 45;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -462,7 +462,7 @@ namespace StoneMask
             this.toolStripSeparator6,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 34);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 38);
             this.helpToolStripMenuItem1.Text = "&Help";
             // 
             // toolStripSeparator6
