@@ -241,7 +241,7 @@
     </Reference>
     <Reference Include="TeximpNet, Version=1.4.1.0, Culture=neutral, PublicKeyToken=978ca55aa4aa29a3, processorArchitecture=MSIL">
       <HintPath>..\packages\TeximpNet.1.4.1\lib\net40\TeximpNet.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
   </ItemGroup>
   <ItemGroup>
