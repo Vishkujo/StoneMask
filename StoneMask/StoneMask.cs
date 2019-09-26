@@ -296,7 +296,6 @@ namespace StoneMask
                 else
                 {
                     //PNG format
-                    moddedTexCompression.Text = moddedFormat;
                     moddedTexCompression.Text = "None (PNG)";
                     mipMapCountLabel2.Text = "None";
                     texturePreview2.Image = new Bitmap(openModdedTexDialog.FileName);
