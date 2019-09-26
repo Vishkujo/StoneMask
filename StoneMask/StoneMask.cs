@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using TeximpNet;
 using TeximpNet.DDS;
 using TeximpNet.Compression;
+//using DDSReader;
 
 namespace StoneMask
 {
@@ -105,6 +106,17 @@ namespace StoneMask
                                 textureCount++;
                             }
                         }
+                    }
+
+                    // Check if file contains textures
+                    if (texList.Count == 0)
+                    {
+                        selectTexBox.Items.Clear();
+                        mipMapCountLabel1.Text = "None";
+                        resolutionCheck1.Text = "None";
+                        originalTexCompression.Text = "None";
+                        MessageBox.Show("This file does not contain any textures. Please open another one.");
+                        return;
                     }
 
                     // Generate texture names list
@@ -206,6 +218,8 @@ namespace StoneMask
             originalTexCompression.Text = texList[x].Format;
             mipMapCountLabel1.Text = texList[x].MipMaps.ToString();
             resolutionCheck1.Text = texList[x].ResX.ToString() + "x" + texList[x].ResY.ToString();
+            mipMapSetting.Value = texList[x].MipMaps;
+            mipSliderValue.Text = mipMapSetting.Value.ToString();
         }
 
         // Open modded texture (2nd browse button)
@@ -224,18 +238,37 @@ namespace StoneMask
                     // Get dds data
                     DDSContainer moddedTexture = DDSFile.Read(openModdedTexDialog.FileName);
                     moddedFormat = moddedTexture.Format.ToString();
+                    int moddedMipCount = moddedTexture.MipChains[0].Count;
                     if (moddedFormat == "BC3_UNorm")
                         moddedFormat = "DXT5";
                     else if (moddedFormat == "BC1_UNorm")
                         moddedFormat = "DXT1";
+
+                    /* Convert to png for preview
+                    DDSImage modDDS = new DDSImage(openModdedTexDialog.FileName);
+                    MemoryStream pngStream = new MemoryStream();
+                    modDDS.SaveAsPng(pngStream);
+                    var newPNG = Image.FromStream(pngStream); */
+
+                    // Change labels
                     moddedTexCompression.Text = moddedFormat;
+                    mipMapCountLabel2.Text = moddedMipCount.ToString();
+                    //texturePreview2.Image = newPNG;
+                    //resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
+                    //texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                    //Dispose
+                    //pngStream.Dispose();
                     moddedTexture.Dispose();
                 }
                 else
                 {
                     //PNG format
                     moddedTexCompression.Text = moddedFormat;
+                    moddedTexCompression.Text = "None (PNG)";
+                    mipMapCountLabel2.Text = "None";
                     texturePreview2.Image = new Bitmap(openModdedTexDialog.FileName);
+                    resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
                     texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
                 }
             }
@@ -278,8 +311,7 @@ namespace StoneMask
                 texFormat = CompressionFormat.DXT1a;
             else if (exportSettingBox.SelectedIndex == 1)
                 texFormat = CompressionFormat.DXT5;
-            Compressor compress;
-            compress = new Compressor();
+            Compressor compress = new Compressor();
             compress.Input.SetData(newDDS);
             compress.Compression.Format = texFormat;
             compress.Input.SetMipmapGeneration(true, 12);
@@ -321,6 +353,11 @@ namespace StoneMask
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Created by SutandoTsukai181 and Vish (@VEpicAGE)");
+        }
+
+        private void MipMapSetting_Scroll(object sender, EventArgs e)
+        {
+            mipSliderValue.Text = mipMapSetting.Value.ToString();
         }
     }
 }
