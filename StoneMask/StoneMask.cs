@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using TeximpNet;
 using TeximpNet.DDS;
 using TeximpNet.Compression;
-//using DDSReader;
+using DDSReader;
 
 namespace StoneMask
 {
@@ -244,21 +244,21 @@ namespace StoneMask
                     else if (moddedFormat == "BC1_UNorm")
                         moddedFormat = "DXT1";
 
-                    /* Convert to png for preview
+                    // Convert to png for preview
                     DDSImage modDDS = new DDSImage(openModdedTexDialog.FileName);
                     MemoryStream pngStream = new MemoryStream();
                     modDDS.SaveAsPng(pngStream);
-                    var newPNG = Image.FromStream(pngStream); */
+                    var newPNG = Image.FromStream(pngStream);
 
                     // Change labels
                     moddedTexCompression.Text = moddedFormat;
                     mipMapCountLabel2.Text = moddedMipCount.ToString();
-                    //texturePreview2.Image = newPNG;
-                    //resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
-                    //texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
+                    texturePreview2.Image = newPNG;
+                    resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
+                    texturePreview2.SizeMode = PictureBoxSizeMode.StretchImage;
 
                     //Dispose
-                    //pngStream.Dispose();
+                    pngStream.Dispose();
                     moddedTexture.Dispose();
                 }
                 else
