@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,5 +31,6 @@ namespace StoneMask
         public int ResX { get; set; }
         public int ResY { get; set; }
         public List<byte> TexFile { get; set; }
+        public Bitmap Preview { get; set; }
     }
 }
