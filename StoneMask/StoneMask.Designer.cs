@@ -90,6 +90,9 @@ namespace StoneMask
             this.moddedTexPathBox.Name = "moddedTexPathBox";
             this.moddedTexPathBox.Size = new System.Drawing.Size(773, 29);
             this.moddedTexPathBox.TabIndex = 5;
+            this.moddedTexPathBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.ModdedTexPathBox_DragDrop);
+            this.moddedTexPathBox.DragOver += new System.Windows.Forms.DragEventHandler(this.ModdedTexPathBox_DragOver);
+            this.moddedTexPathBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModdedTexPathBox_KeyDown);
             // 
             // moddedtexLabel
             // 
@@ -109,6 +112,9 @@ namespace StoneMask
             this.xfbinPathBox.Name = "xfbinPathBox";
             this.xfbinPathBox.Size = new System.Drawing.Size(773, 29);
             this.xfbinPathBox.TabIndex = 8;
+            this.xfbinPathBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.XfbinPathBox_DragDrop);
+            this.xfbinPathBox.DragOver += new System.Windows.Forms.DragEventHandler(this.XfbinPathBox_DragOver);
+            this.xfbinPathBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.XfbinPathBox_KeyDown);
             // 
             // xfbinLabel
             // 
@@ -378,6 +384,7 @@ namespace StoneMask
             this.replaceButton.TabIndex = 40;
             this.replaceButton.Text = "Replace selected texture";
             this.replaceButton.UseVisualStyleBackColor = true;
+            this.replaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
             // mipMapCountLabel2
             // 
@@ -426,7 +433,7 @@ namespace StoneMask
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1110, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1110, 38);
             this.menuStrip1.TabIndex = 45;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -436,7 +443,7 @@ namespace StoneMask
             this.toolStripSeparator6,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 38);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 34);
             this.helpToolStripMenuItem1.Text = "&Help";
             // 
             // toolStripSeparator6
