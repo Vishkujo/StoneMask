@@ -24,13 +24,18 @@ namespace StoneMask
 
         // variables
         public bool xfbinOpen;
-        public bool moddedTexOpen;        
+        public bool moddedTexOpen;
         public string moddedFormat;
         public bool saveXfbin = false;
         public List<byte> fileBytes = new List<byte>();
         public List<NUT> texList = new List<NUT>();
         public int textureCount = 0;
         public int nameCount = 0;
+
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Created by SutandoTsukai181 and Vish (@VEpicAGE)");
+        }
 
         // Gets compression format from NTP3 header
         public string NTP3Format(int formatByte)
@@ -44,6 +49,21 @@ namespace StoneMask
                 return "DXT5";
             }
             else return "Unknown format";
+        }
+
+        private void EnableButtons()
+        {
+            if (xfbinOpen == true && textureCount > 0)
+            {
+                exportXfbinDDS.Enabled = true;
+                exportNUT.Enabled = true;
+                if (moddedTexOpen == true)
+                {
+                    replaceButton.Enabled = true;
+                    exportModdedDDSButton.Enabled = true;
+                    exportXFBINButton.Enabled = true;
+                }
+            }
         }
 
         // Open XFBIN (1st browse button)
@@ -112,7 +132,6 @@ namespace StoneMask
                                                               0x04, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, DXT, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
                                                               0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                                
                                 List<byte> textureFile = new List<byte>();
                                 for (int b = 0; b < ddsHeader.Count; b++)
                                 { 
@@ -151,6 +170,8 @@ namespace StoneMask
                         mipMapCountLabel1.Text = "None";
                         resolutionCheck1.Text = "None";
                         originalTexCompression.Text = "None";
+                        previewLabel1.Text = "";
+                        previewLabel2.Text = "";
                         texturePreview1.Image = null;
                         xfbinOpen = false;
                         MessageBox.Show("This file does not contain any textures. Please open another one.");
@@ -245,6 +266,7 @@ namespace StoneMask
                     }
                     selectTexBox.SelectedIndex = 0;
                     selectTexBox.Focus();
+                    EnableButtons();
                 }
             }
         }
@@ -258,8 +280,9 @@ namespace StoneMask
             resolutionCheck1.Text = texList[x].ResX.ToString() + "x" + texList[x].ResY.ToString();
             mipMapSetting.Value = texList[x].MipMaps;
             mipSliderValue.Text = mipMapSetting.Value.ToString();
-            
+
             // Convert dds to png for preview
+            previewLabel1.Text = "Preview:";
             texturePreview1.Image = texList[x].Preview;
             texturePreview1.SizeMode = PictureBoxSizeMode.Zoom;
 
@@ -302,6 +325,7 @@ namespace StoneMask
                     moddedTexCompression.Text = moddedFormat;
                     mipMapCountLabel2.Text = moddedMipCount.ToString();
                     texturePreview2.Image = newPNG;
+                    previewLabel2.Text = "Preview:";
                     resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
                     texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
 
@@ -314,11 +338,18 @@ namespace StoneMask
                     //PNG format
                     moddedTexCompression.Text = "None (PNG)";
                     mipMapCountLabel2.Text = "None";
+                    previewLabel2.Text = "Preview:";
                     texturePreview2.Image = new Bitmap(openModdedTexDialog.FileName);
                     resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
                     texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
                 }
+                EnableButtons();
             }
+        }
+
+        private void MipMapSetting_Scroll(object sender, EventArgs e)
+        {
+            mipSliderValue.Text = mipMapSetting.Value.ToString();
         }
 
         //Convert the png/export as dds
@@ -347,37 +378,24 @@ namespace StoneMask
         // Save DDS Button
         private void DDSSave_Click(object sender, EventArgs e)
         {
-            // Check if both the original texture and modded texture are open
-            if (xfbinOpen == true && moddedTexOpen == true)
-            {
-                //Convert the png/export as dds
-                CompressDDS();
-                MessageBox.Show("Success. Texture saved as \"new.dds\" in the program folder.");
-            }
-            else
-            {
-                MessageBox.Show("Please open the original and/or modded texture first.");
-            }
+            CompressDDS();
+            MessageBox.Show("Success. Texture saved as \"new.dds\" in the program folder.");
         }
 
         // Save XFBIN button
         private void XfbinSave_Click(object sender, EventArgs e)
         {
-            // Check if all files open
-            if (xfbinOpen == true && moddedTexOpen == true)
-            {
-                saveXfbin = true;
-            }
+            saveXfbin = true;
         }
 
-        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExportXfbinDDS_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Created by SutandoTsukai181 and Vish (@VEpicAGE)");
+            File.WriteAllBytes($"{texList[selectTexBox.SelectedIndex].TexName}.dds", texList[selectTexBox.SelectedIndex].TexFile.ToArray());
+            MessageBox.Show($"Success.\nTexture saved as \"{texList[selectTexBox.SelectedIndex].TexName}.dds\" in the program folder.");
         }
 
-        private void MipMapSetting_Scroll(object sender, EventArgs e)
+        private void ExportNUT_Click(object sender, EventArgs e)
         {
-            mipSliderValue.Text = mipMapSetting.Value.ToString();
         }
     }
 }

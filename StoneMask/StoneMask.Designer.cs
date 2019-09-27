@@ -49,7 +49,7 @@ namespace StoneMask
             this.selectTexLabel = new System.Windows.Forms.Label();
             this.previewLabel1 = new System.Windows.Forms.Label();
             this.texturePreview2 = new System.Windows.Forms.PictureBox();
-            this.exportOriginalDDS = new System.Windows.Forms.Button();
+            this.exportXfbinDDS = new System.Windows.Forms.Button();
             this.exportNUT = new System.Windows.Forms.Button();
             this.exportSettingBox = new System.Windows.Forms.ComboBox();
             this.compressSettingLabel = new System.Windows.Forms.Label();
@@ -123,6 +123,7 @@ namespace StoneMask
             // 
             // exportModdedDDSButton
             // 
+            this.exportModdedDDSButton.Enabled = false;
             this.exportModdedDDSButton.Location = new System.Drawing.Point(248, 688);
             this.exportModdedDDSButton.Name = "exportModdedDDSButton";
             this.exportModdedDDSButton.Size = new System.Drawing.Size(250, 62);
@@ -183,6 +184,7 @@ namespace StoneMask
             // 
             // exportXFBINButton
             // 
+            this.exportXFBINButton.Enabled = false;
             this.exportXFBINButton.Location = new System.Drawing.Point(587, 688);
             this.exportXFBINButton.Name = "exportXFBINButton";
             this.exportXFBINButton.Size = new System.Drawing.Size(226, 62);
@@ -246,9 +248,8 @@ namespace StoneMask
             this.previewLabel1.BackColor = System.Drawing.SystemColors.Control;
             this.previewLabel1.Location = new System.Drawing.Point(545, 128);
             this.previewLabel1.Name = "previewLabel1";
-            this.previewLabel1.Size = new System.Drawing.Size(87, 25);
+            this.previewLabel1.Size = new System.Drawing.Size(0, 25);
             this.previewLabel1.TabIndex = 24;
-            this.previewLabel1.Text = "Preview:";
             // 
             // texturePreview2
             // 
@@ -258,25 +259,29 @@ namespace StoneMask
             this.texturePreview2.TabIndex = 25;
             this.texturePreview2.TabStop = false;
             // 
-            // exportOriginalDDS
+            // exportXfbinDDS
             // 
-            this.exportOriginalDDS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.514286F);
-            this.exportOriginalDDS.Location = new System.Drawing.Point(847, 280);
-            this.exportOriginalDDS.Name = "exportOriginalDDS";
-            this.exportOriginalDDS.Size = new System.Drawing.Size(190, 50);
-            this.exportOriginalDDS.TabIndex = 26;
-            this.exportOriginalDDS.Text = "Export original .dds";
-            this.exportOriginalDDS.UseVisualStyleBackColor = true;
+            this.exportXfbinDDS.Enabled = false;
+            this.exportXfbinDDS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.514286F);
+            this.exportXfbinDDS.Location = new System.Drawing.Point(587, 304);
+            this.exportXfbinDDS.Name = "exportXfbinDDS";
+            this.exportXfbinDDS.Size = new System.Drawing.Size(91, 61);
+            this.exportXfbinDDS.TabIndex = 26;
+            this.exportXfbinDDS.Text = "Export .dds";
+            this.exportXfbinDDS.UseVisualStyleBackColor = true;
+            this.exportXfbinDDS.Click += new System.EventHandler(this.ExportXfbinDDS_Click);
             // 
             // exportNUT
             // 
+            this.exportNUT.Enabled = false;
             this.exportNUT.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.542858F);
-            this.exportNUT.Location = new System.Drawing.Point(847, 336);
+            this.exportNUT.Location = new System.Drawing.Point(684, 304);
             this.exportNUT.Name = "exportNUT";
-            this.exportNUT.Size = new System.Drawing.Size(190, 38);
+            this.exportNUT.Size = new System.Drawing.Size(91, 61);
             this.exportNUT.TabIndex = 27;
             this.exportNUT.Text = "Export .nut";
             this.exportNUT.UseVisualStyleBackColor = true;
+            this.exportNUT.Click += new System.EventHandler(this.ExportNUT_Click);
             // 
             // exportSettingBox
             // 
@@ -322,9 +327,8 @@ namespace StoneMask
             this.previewLabel2.BackColor = System.Drawing.SystemColors.Control;
             this.previewLabel2.Location = new System.Drawing.Point(545, 476);
             this.previewLabel2.Name = "previewLabel2";
-            this.previewLabel2.Size = new System.Drawing.Size(87, 25);
+            this.previewLabel2.Size = new System.Drawing.Size(0, 25);
             this.previewLabel2.TabIndex = 34;
-            this.previewLabel2.Text = "Preview:";
             // 
             // mipMapCountLabel1
             // 
@@ -366,9 +370,11 @@ namespace StoneMask
             // 
             // replaceButton
             // 
-            this.replaceButton.Location = new System.Drawing.Point(448, 304);
+            this.replaceButton.Enabled = false;
+            this.replaceButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.542858F);
+            this.replaceButton.Location = new System.Drawing.Point(408, 304);
             this.replaceButton.Name = "replaceButton";
-            this.replaceButton.Size = new System.Drawing.Size(256, 48);
+            this.replaceButton.Size = new System.Drawing.Size(170, 61);
             this.replaceButton.TabIndex = 40;
             this.replaceButton.Text = "Replace selected texture";
             this.replaceButton.UseVisualStyleBackColor = true;
@@ -420,7 +426,7 @@ namespace StoneMask
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1110, 38);
+            this.menuStrip1.Size = new System.Drawing.Size(1110, 42);
             this.menuStrip1.TabIndex = 45;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -430,7 +436,7 @@ namespace StoneMask
             this.toolStripSeparator6,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 34);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(74, 38);
             this.helpToolStripMenuItem1.Text = "&Help";
             // 
             // toolStripSeparator6
@@ -488,7 +494,7 @@ namespace StoneMask
             this.Controls.Add(this.mipMapSetting);
             this.Controls.Add(this.exportSettingBox);
             this.Controls.Add(this.exportNUT);
-            this.Controls.Add(this.exportOriginalDDS);
+            this.Controls.Add(this.exportXfbinDDS);
             this.Controls.Add(this.texturePreview2);
             this.Controls.Add(this.previewLabel1);
             this.Controls.Add(this.selectTexLabel);
@@ -543,7 +549,7 @@ namespace StoneMask
         private System.Windows.Forms.Label previewLabel1;
         private System.Windows.Forms.PictureBox texturePreview2;
         private System.Windows.Forms.TextBox moddedTexPathBox;
-        private System.Windows.Forms.Button exportOriginalDDS;
+        private System.Windows.Forms.Button exportXfbinDDS;
         private System.Windows.Forms.Button exportNUT;
         private System.Windows.Forms.ComboBox exportSettingBox;
         private System.Windows.Forms.Label compressSettingLabel;
