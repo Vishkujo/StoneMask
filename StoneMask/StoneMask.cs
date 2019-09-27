@@ -449,7 +449,7 @@ namespace StoneMask
         //Convert the png/export as dds
         public void CompressDDS()
         {
-            Surface newDDS = Surface.LoadFromFile(openModdedTexDialog.FileName, true);
+            Surface newDDS = Surface.LoadFromFile(moddedTexPath, true);
             MipmapFilter MipmapFilter = MipmapFilter.Triangle;
             CompressionFormat texFormat = new CompressionFormat();
             if (exportSettingBox.SelectedIndex == 0)
