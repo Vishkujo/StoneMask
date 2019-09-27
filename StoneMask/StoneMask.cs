@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Net;
 using System.Windows.Forms;
 using TeximpNet;
 using TeximpNet.DDS;
@@ -25,13 +27,16 @@ namespace StoneMask
         // variables
         public string xfbinPath;
         public string moddedTexPath;
+        public string moddedFormat;
         public string dragFilePath;
+        public string imageUrl;
         public bool xfbinOpen;
         public bool moddedTexOpen;
-        public string moddedFormat;
+        public bool isWebImage = false;
         public bool ddsNoHeader = false;
         public List<byte> fileBytes = new List<byte>();
         public List<NUT> texList = new List<NUT>();
+        public List<string> dlPics = new List<string>();
         public int textureCount = 0;
         public int nameCount = 0;
 
@@ -347,7 +352,7 @@ namespace StoneMask
         {
             moddedTexPathBox.Text = moddedTexPath;
             moddedTexOpen = true;
-            texturePreview2.Image = null;
+            if (!isWebImage) texturePreview2.Image = null;
             moddedFormat = "None";
             // Check if file is dds or png
             if (DDSFile.IsDDSFile(moddedTexPath) == true)
@@ -375,21 +380,25 @@ namespace StoneMask
                 resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
                 texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
 
-                //Dispose
+                // Dispose
                 pngStream.Dispose();
                 moddedTexture.Dispose();
             }
             else
             {
-                //Bitmap/Png format
+                // Bitmap/Png format
                 if (moddedTexPath.Contains(".bmp")) moddedTexCompression.Text = "None (Bitmap)";
                 else if (moddedTexPath.Contains(".png")) moddedTexCompression.Text = "None (PNG)";
                 else moddedTexCompression.Text = "None";
                 mipMapCountLabel2.Text = "None";
                 previewLabel2.Text = "Preview:";
-                texturePreview2.Image = new Bitmap(moddedTexPath);
+                if (!isWebImage)
+                {
+                    texturePreview2.Image = new Bitmap(moddedTexPath);
+                    texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
+                }
                 resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
-                texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
+                
             }
             EnableButtons();
         }
@@ -406,6 +415,7 @@ namespace StoneMask
             if (openModdedTexDialog.ShowDialog() == DialogResult.OK)
             {
                 moddedTexPath = openModdedTexDialog.FileName;
+                isWebImage = false;
                 ModdedTexOpen();
             }
         }
@@ -419,21 +429,58 @@ namespace StoneMask
                 string[] files = e.Data.GetData(DataFormats.FileDrop) as string[];
                 string format = Path.GetExtension(files[0]);
                 if (files.Length == 1)
+                {
                     if (format == ".dds" || format == ".png" || format == ".bmp")
                     {
                         e.Effect = DragDropEffects.Copy;
                         dragFilePath = files[0];
                     }
+                }
             }
+            else if (e.Data.GetDataPresent("UniformResourceLocator")) e.Effect = DragDropEffects.Link;
         }
 
         private void ModdedTexPathBox_DragDrop(object sender, DragEventArgs e)
         {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            moddedTexPathBox.Text = dragFilePath;
-            moddedTexPath = moddedTexPathBox.Text;
-            ModdedTexOpen();
-            return;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                moddedTexPathBox.Text = dragFilePath;
+                moddedTexPath = moddedTexPathBox.Text;
+                isWebImage = false;
+                ModdedTexOpen();
+            }
+
+            // Get correct link to image if it's a url
+            else if (e.Data.GetDataPresent("UniformResourceLocator"))
+            {
+                MemoryStream ms = e.Data.GetData("UniformResourceLocator") as MemoryStream;
+                byte[] bytes = ms.ToArray();
+                Encoding encode = Encoding.ASCII;
+                string url = encode.GetString(bytes);
+                string fileName = "";
+                for (int x = url.Length; x > 1; x--)
+                {
+                    // .png, .jpg, .jpeg
+                    if (url.ElementAt(x - 1) == 'g' && url.ElementAt(x - 2) == 'n' && url.ElementAt(x - 3) == 'p' && url.ElementAt(x - 4) == '.' ||
+                        url.ElementAt(x - 1) == 'g' && url.ElementAt(x - 2) == 'p' && url.ElementAt(x - 3) == 'j' && url.ElementAt(x - 4) == '.' ||
+                        url.ElementAt(x - 1) == 'g' && url.ElementAt(x - 2) == 'e' && url.ElementAt(x - 3) == 'p' && url.ElementAt(x - 4) == 'j' && url.ElementAt(x - 5) == '.')
+                    {
+                        imageUrl = url.Remove(x);
+                        x = 1;
+                    }
+                }
+                for (int x = imageUrl.Length; x > 1; x--)
+                {
+                    if (imageUrl.ElementAt(x - 1) == '/')
+                    {
+                        fileName = imageUrl.Substring(x);
+                        x = 1;
+                    }
+                }
+                SaveWebImage(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                isWebImage = true;
+                ModdedTexOpen();
+            }
         }
 
         // Open modded texture (enter key pressed)
@@ -442,8 +489,36 @@ namespace StoneMask
             if (e.KeyCode == Keys.Enter && File.Exists(moddedTexPathBox.Text))
             {
                 moddedTexPath = moddedTexPathBox.Text;
+                isWebImage = false;
                 ModdedTexOpen();
             }
+        }
+
+        // Download image
+        public void SaveWebImage(string filename, System.Drawing.Imaging.ImageFormat format)
+        {
+            if (filename == "") return;
+            string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StoneMask");
+            if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
+            WebClient client = new WebClient();
+            Stream stream = client.OpenRead(imageUrl);
+            Bitmap bitmap; bitmap = new Bitmap(stream);
+            string fileDir = Path.Combine(appData, filename);
+            moddedTexPathBox.Text = fileDir;
+            moddedTexPath = fileDir;
+            if (bitmap != null)
+            {
+                if (File.Exists(fileDir)) File.Delete(fileDir);
+                bitmap.Save(fileDir, format);
+                dlPics.Add(fileDir);
+                texturePreview2.Image = bitmap;
+                texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
+            }
+            else MessageBox.Show($"Link does not direct to an image.");
+
+            stream.Flush();
+            stream.Close();
+            client.Dispose();
         }
 
         //Convert the png/export as dds
@@ -496,5 +571,22 @@ namespace StoneMask
         {
             ddsNoHeader = true;
         }
+
+        // Clears the folder in AppData until we add an option to keep the files
+        /* Commented out for now cause it can't delete files downloaded from discord app
+        private void StoneMask_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DirectoryInfo di = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StoneMask"));
+
+            foreach (FileInfo file in di.EnumerateFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.EnumerateDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+        */
     }
 }
