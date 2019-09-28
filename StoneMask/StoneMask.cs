@@ -39,6 +39,7 @@ namespace StoneMask
         public List<string> dlPics = new List<string>();
         public int textureCount = 0;
         public int nameCount = 0;
+        public MemoryStream ddsStream = new MemoryStream();
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -538,15 +539,32 @@ namespace StoneMask
             compress.Input.MipmapFilter = MipmapFilter;
             // Removes the DDS header for the save xfbin button
             if (ddsNoHeader == true)
+            {
                 compress.Output.OutputHeader = false;
-            compress.Process("new.dds");
+                compress.Process(ddsStream);
+                byte[] ddsArray = ddsStream.ToArray();
+                texList[selectTexBox.SelectedIndex].TexFile.Clear();
+                for (int x = 0; x < ddsArray.Length; x++)
+                {
+                    texList[selectTexBox.SelectedIndex].TexFile.Add(ddsArray[x]);
+                }
+                // add code here to replace in filebytes
+
+                compress.Dispose();
+                ddsStream.Dispose();
+            }
+            else
+            {
+                compress.Process("new.dds");
+            }
             compress.Dispose();
             newDDS.Dispose();
         }
 
-        // Save DDS Button
+        // Save Modded DDS Button
         private void DDSSave_Click(object sender, EventArgs e)
         {
+            ddsNoHeader = false;
             CompressDDS();
             MessageBox.Show("Success. Texture saved as \"new.dds\" in the program folder.");
         }
@@ -565,11 +583,13 @@ namespace StoneMask
 
         private void ExportNUT_Click(object sender, EventArgs e)
         {
+
         }
 
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
             ddsNoHeader = true;
+            CompressDDS();
         }
 
         // Clears the folder in AppData until we add an option to keep the files
