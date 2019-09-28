@@ -165,6 +165,8 @@ namespace StoneMask
 
                         texList.Add(new NUT
                         {
+                            NutIndex = x,
+                            TexIndex = texStart,
                             FileSize = fileSize,
                             NTP3Size = ntp3Size,
                             TexSize = textureSize,
@@ -542,15 +544,7 @@ namespace StoneMask
             {
                 compress.Output.OutputHeader = false;
                 compress.Process(ddsStream);
-                byte[] ddsArray = ddsStream.ToArray();
-                texList[selectTexBox.SelectedIndex].TexFile.Clear();
-                for (int x = 0; x < ddsArray.Length; x++)
-                {
-                    texList[selectTexBox.SelectedIndex].TexFile.Add(ddsArray[x]);
-                }
-                // add code here to replace in filebytes
-
-                compress.Dispose();
+                ReplaceTexture(ddsStream);
                 ddsStream.Dispose();
             }
             else
@@ -559,6 +553,26 @@ namespace StoneMask
             }
             compress.Dispose();
             newDDS.Dispose();
+        }
+
+        private void ReplaceTexture(MemoryStream texture)
+        {
+            byte[] ddsArray = ddsStream.ToArray();
+            texList[selectTexBox.SelectedIndex].TexFile.Clear();
+            texList[selectTexBox.SelectedIndex].TexFile = ddsArray.ToList();
+            int a = texList[selectTexBox.SelectedIndex].NutIndex;
+            int b = texList[selectTexBox.SelectedIndex].TexIndex;
+            int z = texList[selectTexBox.SelectedIndex].TexSize;
+            // Move the rest of the file into a new array temporarily
+            byte[] temp = new byte[fileBytes.Count - (b + z)];
+            fileBytes.CopyTo(b + z, temp, 0, fileBytes.Count - (b + z));
+            fileBytes.RemoveRange(b, fileBytes.Count - b);
+            // Add the new texture and the rest of the file
+            for (int i = 0; i < ddsArray.Length; i++) fileBytes.Add(ddsArray[i]);
+            for (int i = 0; i < temp.Length; i++) fileBytes.Add(temp[i]);
+            texturePreview1.Image = texturePreview2.Image;
+            texList[selectTexBox.SelectedIndex].Preview = texturePreview2.Image as Bitmap;
+            MessageBox.Show($"Texture Replaced.", $"Success");
         }
 
         // Save Modded DDS Button
@@ -572,7 +586,7 @@ namespace StoneMask
         // Save XFBIN button
         private void XfbinSave_Click(object sender, EventArgs e)
         {
-            ddsNoHeader = true;
+            File.WriteAllBytes(xfbinPath, fileBytes.ToArray());
         }
 
         private void ExportXfbinDDS_Click(object sender, EventArgs e)

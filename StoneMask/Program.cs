@@ -23,6 +23,8 @@ namespace StoneMask
     public class NUT
     {
         public string TexName { get; set; }
+        public int NutIndex { get; set; }
+        public int TexIndex { get; set; }
         public int FileSize { get; set; }
         public int NTP3Size { get; set; }
         public int TexSize { get; set; }
