@@ -27,6 +27,7 @@ namespace StoneMask
         public int TexIndex { get; set; }
         public int FileSize { get; set; }
         public int NTP3Size { get; set; }
+        public int HeaderSize { get; set; }
         public int TexSize { get; set; }
         public string Format { get; set; }
         public int MipMaps { get; set; }
