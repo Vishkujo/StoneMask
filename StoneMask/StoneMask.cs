@@ -575,8 +575,8 @@ namespace StoneMask
                 byte[] ddsArray = ddsStream.ToArray();
                 int ddsLength = ddsArray.Length;
                 int texIndex = selectTexBox.SelectedIndex;
-                UpdateNut(texIndex, ddsLength, mipMapSetting.Value, texFormat, newDDS.Width, newDDS.Height);
                 ReplaceTexture(texIndex, ddsArray);
+                UpdateNut(texIndex, ddsLength, mipMapSetting.Value, texFormat, newDDS.Width, newDDS.Height);
                 ddsStream.Dispose();
             }
             else
