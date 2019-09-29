@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="CopyNativeTeximp" AfterTargets="BeforeBuild">
+    <ItemGroup>
+        <NativeTeximpLibs Include="$(MSBuildThisFileDirectory)\native\*\*.*;
+                                   $(MSBuildThisFileDirectory)\native\*\*.*;"/>
+    </ItemGroup>  
+    <Message Text="Copying native Teximp libraries..." Importance="high" />    
+    <Copy SourceFiles="@(NativeTeximpLibs)" DestinationFolder="$(OutputPath)" />
+  </Target>
+  <Target Name="CleanTeximp" AfterTargets="Clean">
+    <Message Text="Cleaning native Teximp libraries..." Importance="high" />
+    <ItemGroup>
+	<NativeTeximpLibsToDelete Include="$(TargetDir)*FreeImage*.*; $(TargetDir)*nvtt*.*;" />
+    </ItemGroup>
+    <Delete Files="@(NativeTeximpLibsToDelete)" />
+  </Target>
+</Project>
