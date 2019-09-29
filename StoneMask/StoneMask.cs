@@ -574,8 +574,9 @@ namespace StoneMask
                 compress.Process(ddsStream);
                 byte[] ddsArray = ddsStream.ToArray();
                 int ddsLength = ddsArray.Length;
-                UpdateNut(ddsLength, mipMapSetting.Value, texFormat, newDDS.Width, newDDS.Height);
-                ReplaceTexture(ddsArray);
+                int texIndex = selectTexBox.SelectedIndex;
+                UpdateNut(texIndex, ddsLength, mipMapSetting.Value, texFormat, newDDS.Width, newDDS.Height);
+                ReplaceTexture(texIndex, ddsArray);
                 ddsStream.Dispose();
             }
             else
@@ -586,14 +587,15 @@ namespace StoneMask
             newDDS.Dispose();
         }
 
-        private void UpdateNut(int size, int mipmaps, CompressionFormat format, int resX, int resY)
+        private void UpdateNut(int index,int size, int mipmaps, CompressionFormat format, int resX, int resY)
         {
-            int a = texList[selectTexBox.SelectedIndex].NutIndex;
-            int headSize = texList[selectTexBox.SelectedIndex].HeaderSize;
-            int texSize = texList[selectTexBox.SelectedIndex].TexSize;
+            int a = texList[index].NutIndex;
+            int headSize = texList[index].HeaderSize;
+            int texSize = texList[index].TexSize;
             int diff;
             if (size != texSize) diff = size - texSize;
             else diff = 0; // Will just update mipmaps/format/res
+
             if (diff != 0)
             {
                 byte[] bytesSize1 = BitConverter.GetBytes(size + 0x9C);
@@ -612,7 +614,11 @@ namespace StoneMask
                 fileBytes[a + 0x19] = bytesSize4[2]; // textureSize
                 fileBytes[a + 0x1A] = bytesSize4[1];
                 fileBytes[a + 0x1B] = bytesSize4[0];
+                texList[index].FileSize = size + 0x9C; // Update sizes in texList
+                texList[index].NTP3Size = size + 0x90;
+                texList[index].TexSize = size;
             }
+
             byte mips = Convert.ToByte(mipmaps);
             byte compFormat = 0x00;
             if (format == CompressionFormat.DXT1a) compFormat = 0x00;
@@ -625,24 +631,40 @@ namespace StoneMask
             fileBytes[a + 0x25] = bytesX[0];
             fileBytes[a + 0x26] = bytesY[1]; // resY
             fileBytes[a + 0x27] = bytesY[0];
+            texList[index].MipMaps = mipmaps; // Update properties in texList
+            texList[index].Format = NTP3Format(compFormat);
+            texList[index].ResX = resX;
+            texList[index].ResY = resY;
+
+            foreach (var i in texList) // Update index for other NUTs
+            {
+                if (i.NutIndex != texList[index].NutIndex)
+                {
+                    i.NutIndex += diff;
+                    i.TexIndex += diff;
+                }
+            }
         }
 
-        private void ReplaceTexture(byte[] newArray)
+        private void ReplaceTexture(int index, byte[] newArray)
         {
-            texList[selectTexBox.SelectedIndex].TexFile.Clear();
-            texList[selectTexBox.SelectedIndex].TexFile = newArray.ToList();
-            int a = texList[selectTexBox.SelectedIndex].NutIndex;
-            int b = texList[selectTexBox.SelectedIndex].TexIndex;
-            int z = texList[selectTexBox.SelectedIndex].TexSize;
+            texList[index].TexFile.Clear();
+            texList[index].TexFile = newArray.ToList(); // Update texture in texList
+            int a = texList[index].NutIndex;
+            int b = texList[index].TexIndex;
+            int z = texList[index].TexSize;
+
             // Move the rest of the file into a new array temporarily
             byte[] temp = new byte[fileBytes.Count - (b + z)];
             fileBytes.CopyTo(b + z, temp, 0, fileBytes.Count - (b + z));
             fileBytes.RemoveRange(b, fileBytes.Count - b);
+
             // Add the new texture and the rest of the file
             for (int i = 0; i < newArray.Length; i++) fileBytes.Add(newArray[i]);
             for (int i = 0; i < temp.Length; i++) fileBytes.Add(temp[i]);
+
             texturePreview1.Image = texturePreview2.Image;
-            texList[selectTexBox.SelectedIndex].Preview = texturePreview2.Image as Bitmap;
+            texList[index].Preview = texturePreview2.Image as Bitmap; // Update preview in texList
             MessageBox.Show($"Texture Replaced.", $"Success");
         }
 
