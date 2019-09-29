@@ -638,7 +638,7 @@ namespace StoneMask
 
             foreach (var i in texList) // Update index for other NUTs
             {
-                if (i.NutIndex != texList[index].NutIndex)
+                if (i.NutIndex > texList[index].NutIndex)
                 {
                     i.NutIndex += diff;
                     i.TexIndex += diff;
