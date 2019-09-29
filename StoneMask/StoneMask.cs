@@ -587,7 +587,7 @@ namespace StoneMask
             newDDS.Dispose();
         }
 
-        private void UpdateNut(int index,int size, int mipmaps, CompressionFormat format, int resX, int resY)
+        private void UpdateNut(int index, int size, int mipmaps, CompressionFormat format, int resX, int resY)
         {
             int a = texList[index].NutIndex;
             int headSize = texList[index].HeaderSize;
