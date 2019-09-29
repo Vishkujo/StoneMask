@@ -357,8 +357,8 @@ namespace StoneMask
             }
         }
 
-        // Update texture related content whenever the selected item changes
-        private void SelectTexBox_SelectedIndexChanged(object sender, EventArgs e)
+        // Made it into a new method to call it after replacing a texture
+        private void RefreshProperties()
         {
             int x = selectTexBox.SelectedIndex;
             originalTexCompression.Text = texList[x].Format;
@@ -377,6 +377,12 @@ namespace StoneMask
                 exportSettingBox.SelectedIndex = 0;
             else if (texList[x].Format == "DXT5")
                 exportSettingBox.SelectedIndex = 1;
+        }
+
+        // Update texture related content whenever the selected item changes
+        private void SelectTexBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshProperties();
         }
 
         private void ModdedTexOpen()
@@ -575,8 +581,9 @@ namespace StoneMask
                 byte[] ddsArray = ddsStream.ToArray();
                 int ddsLength = ddsArray.Length;
                 int texIndex = selectTexBox.SelectedIndex;
-                ReplaceTexture(texIndex, ddsArray);
+                bool success = ReplaceTexture(texIndex, ddsArray);
                 UpdateNut(texIndex, ddsLength, mipMapSetting.Value, texFormat, newDDS.Width, newDDS.Height);
+                if (success) MessageBox.Show($"Texture Replaced.", $"Success");
                 ddsStream.Dispose();
             }
             else
@@ -644,9 +651,11 @@ namespace StoneMask
                     i.TexIndex += diff;
                 }
             }
+            RefreshProperties();
         }
 
-        private void ReplaceTexture(int index, byte[] newArray)
+        // bool just so it can refresh the properties before showing success
+        private bool ReplaceTexture(int index, byte[] newArray)
         {
             texList[index].TexFile.Clear();
             texList[index].TexFile = newArray.ToList(); // Update texture in texList
@@ -663,9 +672,8 @@ namespace StoneMask
             for (int i = 0; i < newArray.Length; i++) fileBytes.Add(newArray[i]);
             for (int i = 0; i < temp.Length; i++) fileBytes.Add(temp[i]);
 
-            texturePreview1.Image = texturePreview2.Image;
             texList[index].Preview = texturePreview2.Image as Bitmap; // Update preview in texList
-            MessageBox.Show($"Texture Replaced.", $"Success");
+            return true;
         }
 
         // Save Modded DDS Button
@@ -679,7 +687,9 @@ namespace StoneMask
         // Save XFBIN button
         private void XfbinSave_Click(object sender, EventArgs e)
         {
+            FileInfo file = new FileInfo(xfbinPath);
             File.WriteAllBytes(xfbinPath, fileBytes.ToArray());
+            MessageBox.Show("File saved as " + file.Name + " in the original directory.", $"Success");
         }
 
         private void ExportXfbinDDS_Click(object sender, EventArgs e)
