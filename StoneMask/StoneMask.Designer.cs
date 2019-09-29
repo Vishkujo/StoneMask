@@ -48,13 +48,11 @@ namespace StoneMask
             this.selectTexBox = new System.Windows.Forms.ListBox();
             this.selectTexLabel = new System.Windows.Forms.Label();
             this.previewLabel1 = new System.Windows.Forms.Label();
-            this.texturePreview2 = new System.Windows.Forms.PictureBox();
             this.exportXfbinDDS = new System.Windows.Forms.Button();
             this.exportNUT = new System.Windows.Forms.Button();
             this.exportSettingBox = new System.Windows.Forms.ComboBox();
             this.compressSettingLabel = new System.Windows.Forms.Label();
             this.mipSettingLabel = new System.Windows.Forms.Label();
-            this.texturePreview1 = new System.Windows.Forms.PictureBox();
             this.previewLabel2 = new System.Windows.Forms.Label();
             this.mipMapCountLabel1 = new System.Windows.Forms.Label();
             this.mipMapLabel1 = new System.Windows.Forms.Label();
@@ -71,10 +69,12 @@ namespace StoneMask
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mipMapSetting = new System.Windows.Forms.TrackBar();
             this.mipSliderValue = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.texturePreview2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).BeginInit();
+            this.texturePreview1 = new System.Windows.Forms.PictureBox();
+            this.texturePreview2 = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texturePreview2)).BeginInit();
             this.SuspendLayout();
             // 
             // openOriginalTexDialog
@@ -257,14 +257,6 @@ namespace StoneMask
             this.previewLabel1.Size = new System.Drawing.Size(0, 25);
             this.previewLabel1.TabIndex = 24;
             // 
-            // texturePreview2
-            // 
-            this.texturePreview2.Location = new System.Drawing.Point(470, 507);
-            this.texturePreview2.Name = "texturePreview2";
-            this.texturePreview2.Size = new System.Drawing.Size(256, 144);
-            this.texturePreview2.TabIndex = 25;
-            this.texturePreview2.TabStop = false;
-            // 
             // exportXfbinDDS
             // 
             this.exportXfbinDDS.Enabled = false;
@@ -318,14 +310,6 @@ namespace StoneMask
             this.mipSettingLabel.Size = new System.Drawing.Size(104, 25);
             this.mipSettingLabel.TabIndex = 31;
             this.mipSettingLabel.Text = "Mip Maps:";
-            // 
-            // texturePreview1
-            // 
-            this.texturePreview1.Location = new System.Drawing.Point(448, 154);
-            this.texturePreview1.Name = "texturePreview1";
-            this.texturePreview1.Size = new System.Drawing.Size(256, 144);
-            this.texturePreview1.TabIndex = 35;
-            this.texturePreview1.TabStop = false;
             // 
             // previewLabel2
             // 
@@ -478,6 +462,22 @@ namespace StoneMask
             this.mipSliderValue.TabIndex = 33;
             this.mipSliderValue.Text = "1";
             // 
+            // texturePreview1
+            // 
+            this.texturePreview1.Location = new System.Drawing.Point(448, 154);
+            this.texturePreview1.Name = "texturePreview1";
+            this.texturePreview1.Size = new System.Drawing.Size(256, 144);
+            this.texturePreview1.TabIndex = 35;
+            this.texturePreview1.TabStop = false;
+            // 
+            // texturePreview2
+            // 
+            this.texturePreview2.Location = new System.Drawing.Point(470, 507);
+            this.texturePreview2.Name = "texturePreview2";
+            this.texturePreview2.Size = new System.Drawing.Size(256, 144);
+            this.texturePreview2.TabIndex = 25;
+            this.texturePreview2.TabStop = false;
+            // 
             // StoneMask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(168F, 168F);
@@ -524,12 +524,14 @@ namespace StoneMask
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "StoneMask";
-            this.Text = "Stone Mask v1.0 - JoJo ASB/EoH Texture Editor";
-            ((System.ComponentModel.ISupportInitialize)(this.texturePreview2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).EndInit();
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Stone Mask - JoJo ASB/EoH Texture Editor";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StoneMask_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.texturePreview2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

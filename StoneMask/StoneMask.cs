@@ -41,9 +41,15 @@ namespace StoneMask
         public int nameCount = 0;
         public MemoryStream ddsStream = new MemoryStream();
 
+        public static string ProgramVersion
+        {
+            get { return "1.0"; }
+        }
+
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Created by SutandoTsukai181 and Vish (@VEpicAGE)");
+            About aboutPopup = new About();
+            aboutPopup.Show(this);
         }
 
         // Gets compression format from NTP3 header
@@ -134,11 +140,11 @@ namespace StoneMask
                     //NTP3
                     if (fileBytes[x] == 78 && fileBytes[x + 1] == 84 && fileBytes[x + 2] == 80 && fileBytes[x + 3] == 51)
                     {
-                        int headerSize = fileBytes[x + 0x1D];
-                        int texStart = x + headerSize + 0x10;
+                        int headerLength = fileBytes[x + 0x1D]; // headerLength is the length of the header,
+                        int texStart = x + headerLength + 0x10; // while headerSize is textureSize + headerLength
                         int fileSize = fileBytes[x - 0x17] * 0x10000 + fileBytes[x - 0x16] * 0x100 + fileBytes[x - 0x15];
                         int ntp3Size = fileBytes[x - 3] * 0x10000 + fileBytes[x - 2] * 0x100 + fileBytes[x - 1];
-                        //int textureSize3 = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
+                        int headerSize = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
                         int textureSize = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
                         int mipCount = fileBytes[x + 0x21];
                         string format = NTP3Format(fileBytes[x + 0x23]);
@@ -190,6 +196,7 @@ namespace StoneMask
                             TexIndex = texStart,
                             FileSize = fileSize,
                             NTP3Size = ntp3Size,
+                            HeaderSize = headerSize,
                             TexSize = textureSize,
                             MipMaps = mipCount,
                             Format = format,
@@ -372,7 +379,7 @@ namespace StoneMask
                 exportSettingBox.SelectedIndex = 1;
         }
 
-        private void ModdedTexOpen ()
+        private void ModdedTexOpen()
         {
             moddedTexPathBox.Text = moddedTexPath;
             moddedTexOpen = true;
@@ -422,7 +429,7 @@ namespace StoneMask
                     texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
                 }
                 resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
-                
+
             }
             EnableButtons();
         }
@@ -443,7 +450,7 @@ namespace StoneMask
                 ModdedTexOpen();
             }
         }
-        
+
         // Open modded texture (Drag and Drop)
         private void ModdedTexPathBox_DragOver(object sender, DragEventArgs e)
         {
@@ -565,7 +572,10 @@ namespace StoneMask
             {
                 compress.Output.OutputHeader = false;
                 compress.Process(ddsStream);
-                ReplaceTexture(ddsStream);
+                byte[] ddsArray = ddsStream.ToArray();
+                int ddsLength = ddsArray.Length;
+                UpdateNut(ddsLength, mipMapSetting.Value, texFormat, newDDS.Width, newDDS.Height);
+                ReplaceTexture(ddsArray);
                 ddsStream.Dispose();
             }
             else
@@ -576,11 +586,51 @@ namespace StoneMask
             newDDS.Dispose();
         }
 
-        private void ReplaceTexture(MemoryStream texture)
+        private void UpdateNut(int size, int mipmaps, CompressionFormat format, int resX, int resY)
         {
-            byte[] ddsArray = ddsStream.ToArray();
+            int a = texList[selectTexBox.SelectedIndex].NutIndex;
+            int headSize = texList[selectTexBox.SelectedIndex].HeaderSize;
+            int texSize = texList[selectTexBox.SelectedIndex].TexSize;
+            int diff;
+            if (size != texSize) diff = size - texSize;
+            else diff = 0; // Will just update mipmaps/format/res
+            if (diff != 0)
+            {
+                byte[] bytesSize1 = BitConverter.GetBytes(size + 0x9C);
+                byte[] bytesSize2 = BitConverter.GetBytes(size + 0x90);
+                byte[] bytesSize3 = BitConverter.GetBytes(headSize + diff);
+                byte[] bytesSize4 = BitConverter.GetBytes(size);
+                fileBytes[a - 0x17] = bytesSize1[2]; // fileSize
+                fileBytes[a - 0x16] = bytesSize1[1];
+                fileBytes[a - 0x15] = bytesSize1[0];
+                fileBytes[a - 0x03] = bytesSize2[2]; // ntp3Size
+                fileBytes[a - 0x02] = bytesSize2[1];
+                fileBytes[a - 0x01] = bytesSize2[0];
+                fileBytes[a + 0x11] = bytesSize3[2]; // headerSize
+                fileBytes[a + 0x12] = bytesSize3[1];
+                fileBytes[a + 0x13] = bytesSize3[0];
+                fileBytes[a + 0x19] = bytesSize4[2]; // textureSize
+                fileBytes[a + 0x1A] = bytesSize4[1];
+                fileBytes[a + 0x1B] = bytesSize4[0];
+            }
+            byte mips = Convert.ToByte(mipmaps);
+            byte compFormat = 0x00;
+            if (format == CompressionFormat.DXT1a) compFormat = 0x00;
+            else if (format == CompressionFormat.DXT5) compFormat = 0x02;
+            byte[] bytesX = BitConverter.GetBytes(resX);
+            byte[] bytesY = BitConverter.GetBytes(resY);
+            fileBytes[a + 0x21] = mips; // mipCount
+            fileBytes[a + 0x23] = compFormat; // format
+            fileBytes[a + 0x24] = bytesX[1]; // resX
+            fileBytes[a + 0x25] = bytesX[0];
+            fileBytes[a + 0x26] = bytesY[1]; // resY
+            fileBytes[a + 0x27] = bytesY[0];
+        }
+
+        private void ReplaceTexture(byte[] newArray)
+        {
             texList[selectTexBox.SelectedIndex].TexFile.Clear();
-            texList[selectTexBox.SelectedIndex].TexFile = ddsArray.ToList();
+            texList[selectTexBox.SelectedIndex].TexFile = newArray.ToList();
             int a = texList[selectTexBox.SelectedIndex].NutIndex;
             int b = texList[selectTexBox.SelectedIndex].TexIndex;
             int z = texList[selectTexBox.SelectedIndex].TexSize;
@@ -589,7 +639,7 @@ namespace StoneMask
             fileBytes.CopyTo(b + z, temp, 0, fileBytes.Count - (b + z));
             fileBytes.RemoveRange(b, fileBytes.Count - b);
             // Add the new texture and the rest of the file
-            for (int i = 0; i < ddsArray.Length; i++) fileBytes.Add(ddsArray[i]);
+            for (int i = 0; i < newArray.Length; i++) fileBytes.Add(newArray[i]);
             for (int i = 0; i < temp.Length; i++) fileBytes.Add(temp[i]);
             texturePreview1.Image = texturePreview2.Image;
             texList[selectTexBox.SelectedIndex].Preview = texturePreview2.Image as Bitmap;
@@ -601,7 +651,7 @@ namespace StoneMask
         {
             ddsNoHeader = false;
             CompressDDS();
-            MessageBox.Show("Success. Texture saved as \"new.dds\" in the program folder.");
+            MessageBox.Show("Texture saved as \"new.dds\" in the program folder.", $"Success");
         }
 
         // Save XFBIN button
@@ -613,7 +663,7 @@ namespace StoneMask
         private void ExportXfbinDDS_Click(object sender, EventArgs e)
         {
             File.WriteAllBytes($"{texList[selectTexBox.SelectedIndex].TexName}.dds", texList[selectTexBox.SelectedIndex].TexFile.ToArray());
-            MessageBox.Show($"Success.\nTexture saved as \"{texList[selectTexBox.SelectedIndex].TexName}.dds\" in the program folder.");
+            MessageBox.Show($"Texture saved as \"{texList[selectTexBox.SelectedIndex].TexName}.dds\" in the program folder.", $"Success");
         }
 
         private void ExportNUT_Click(object sender, EventArgs e)
@@ -626,6 +676,12 @@ namespace StoneMask
             ddsNoHeader = true;
             CompressDDS();
         }
+
+        private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
 
         // Clears the folder in AppData until we add an option to keep the files
         /* Commented out for now cause it can't delete files downloaded from discord app
