@@ -35,6 +35,7 @@ namespace StoneMask
         public bool isWebImage = false;
         public bool ddsNoHeader = false;
         public List<byte> fileBytes = new List<byte>();
+        public List<int> searchResults = new List<int>();
         public List<NUT> texList = new List<NUT>();
         public List<string> dlPics = new List<string>();
         public int textureCount = 0;
@@ -120,80 +121,76 @@ namespace StoneMask
             }
 
             //Generate list of NTP3 files
+            searchResults = Program.SearchForByte("NTP3", fileBytes, 0, fileBytes.Count, 0);
+            for (int i = 0; i < searchResults.Count; i++)
             {
-                for (int x = 0; x < fileBytes.Count - 3; x++)
+                int x = searchResults[i];
+                int headerLength = fileBytes[x + 0x1D]; // headerLength is the length of the header,
+                int texStart = x + headerLength + 0x10; // while headerSize is textureSize + headerLength
+                int fileSize = fileBytes[x - 0x17] * 0x10000 + fileBytes[x - 0x16] * 0x100 + fileBytes[x - 0x15];
+                int ntp3Size = fileBytes[x - 3] * 0x10000 + fileBytes[x - 2] * 0x100 + fileBytes[x - 1];
+                int headerSize = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
+                int textureSize = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
+                int mipCount = fileBytes[x + 0x21];
+                string format = NTP3Format(fileBytes[x + 0x23]);
+                int resX = fileBytes[x + 0x24] * 0x100 + fileBytes[x + 0x25];
+                int resY = fileBytes[x + 0x26] * 0x100 + fileBytes[x + 0x27];
+                byte DXT = new byte();
+
+                if (format == "DXT1")
+                    DXT = 0x31;
+                else if (format == "DXT5")
+                    DXT = 0x35;
+
+                byte[] bytesY = BitConverter.GetBytes(resY);
+                byte[] bytesX = BitConverter.GetBytes(resX);
+                byte y1, y2, x1, x2;
+                y1 = y2 = x1 = x2 = 0x00;
+
+                y1 = bytesY[0];
+                y2 = bytesY[1];
+                x1 = bytesX[0];
+                x2 = bytesX[1];
+
+                // Create header
+                List<byte> ddsHeader = new List<byte>() { 0x44, 0x44, 0x53, 0x20, 0x7C, 0x00, 0x00, 0x00, 0x07, 0x10, 0x00, 0x00, y1, y2, 0x00, 0x00,
+                                                          x1, x2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00,
+                                                          0x04, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, DXT, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
+                                                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+                List<byte> textureFile = new List<byte>();
+                for (int b = 0; b < ddsHeader.Count; b++)
                 {
-                    //NTP3
-                    if (fileBytes[x] == 78 && fileBytes[x + 1] == 84 && fileBytes[x + 2] == 80 && fileBytes[x + 3] == 51)
-                    {
-                        int headerLength = fileBytes[x + 0x1D]; // headerLength is the length of the header,
-                        int texStart = x + headerLength + 0x10; // while headerSize is textureSize + headerLength
-                        int fileSize = fileBytes[x - 0x17] * 0x10000 + fileBytes[x - 0x16] * 0x100 + fileBytes[x - 0x15];
-                        int ntp3Size = fileBytes[x - 3] * 0x10000 + fileBytes[x - 2] * 0x100 + fileBytes[x - 1];
-                        int headerSize = fileBytes[x + 0x11] * 0x10000 + fileBytes[x + 0x12] * 0x100 + fileBytes[x + 0x13];
-                        int textureSize = fileBytes[x + 0x19] * 0x10000 + fileBytes[x + 0x1A] * 0x100 + fileBytes[x + 0x1B];
-                        int mipCount = fileBytes[x + 0x21];
-                        string format = NTP3Format(fileBytes[x + 0x23]);
-                        int resX = fileBytes[x + 0x24] * 0x100 + fileBytes[x + 0x25];
-                        int resY = fileBytes[x + 0x26] * 0x100 + fileBytes[x + 0x27];
-                        byte DXT = new byte();
-
-                        if (format == "DXT1")
-                            DXT = 0x31;
-                        else if (format == "DXT5")
-                            DXT = 0x35;
-
-                        byte[] bytesY = BitConverter.GetBytes(resY);
-                        byte[] bytesX = BitConverter.GetBytes(resX);
-                        byte y1, y2, x1, x2;
-                        y1 = y2 = x1 = x2 = 0x00;
-
-                        y1 = bytesY[0];
-                        y2 = bytesY[1];
-                        x1 = bytesX[0];
-                        x2 = bytesX[1];
-
-                        // Create header
-                        List<byte> ddsHeader = new List<byte>() { 0x44, 0x44, 0x53, 0x20, 0x7C, 0x00, 0x00, 0x00, 0x07, 0x10, 0x00, 0x00, y1, y2, 0x00, 0x00,
-                                                              x1, x2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00,
-                                                              0x04, 0x00, 0x00, 0x00, 0x44, 0x58, 0x54, DXT, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00,
-                                                              0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-                        List<byte> textureFile = new List<byte>();
-                        for (int b = 0; b < ddsHeader.Count; b++)
-                        {
-                            textureFile.Add(ddsHeader[b]);
-                        }
-                        for (int a = 0; a < textureSize; a++)
-                        {
-                            textureFile.Add(fileBytes[texStart + a]);
-                        }
-
-                        Bitmap preview;
-                        if (format == "Unknown format") preview = null;
-                        else preview = DDSImage.ConvertDDSToPng(textureFile.ToArray());
-
-                        texList.Add(new NUT
-                        {
-                            NutIndex = x,
-                            TexIndex = texStart,
-                            FileSize = fileSize,
-                            NTP3Size = ntp3Size,
-                            HeaderSize = headerSize,
-                            TexSize = textureSize,
-                            MipMaps = mipCount,
-                            Format = format,
-                            ResX = resX,
-                            ResY = resY,
-                            TexFile = textureFile,
-                            Preview = preview
-                        });
-                        textureCount++;
-                    }
+                    textureFile.Add(ddsHeader[b]);
                 }
+                for (int a = 0; a < textureSize; a++)
+                {
+                    textureFile.Add(fileBytes[texStart + a]);
+                }
+
+                Bitmap preview;
+                if (format == "Unknown format") preview = null;
+                else preview = DDSImage.ConvertDDSToPng(textureFile.ToArray());
+
+                texList.Add(new NUT
+                {
+                    NutIndex = x,
+                    TexIndex = texStart,
+                    FileSize = fileSize,
+                    NTP3Size = ntp3Size,
+                    HeaderSize = headerSize,
+                    TexSize = textureSize,
+                    MipMaps = mipCount,
+                    Format = format,
+                    ResX = resX,
+                    ResY = resY,
+                    TexFile = textureFile,
+                    Preview = preview
+                });
+                textureCount++;
             }
 
             // Check if file contains textures
@@ -205,91 +202,50 @@ namespace StoneMask
             }
 
             // Generate texture names list
-            // Had to move it down so we can limit the number of names
+            int nuccID = Program.SearchForByte("nucc", fileBytes, 5, fileBytes.Count, 1)[0];
+            int StartID = Program.SearchForByte("null2", fileBytes, nuccID, fileBytes.Count, 1)[0] + 2;
+            int EndID = Program.SearchForByte("null4", fileBytes, nuccID, fileBytes.Count, 1)[0];
+            int NutEnd = StartID;
+
+            List<string> Lines = new List<string>();
+            List<byte> nameBytes = new List<byte>();
+            // Clears textbox if browse is clicked again
+            selectTexBox.Items.Clear();
+
+            searchResults = Program.SearchForByte(".nut", fileBytes, NutEnd, EndID, 0);
+            for (int i = 0; i < searchResults.Count; i++)
             {
-                int nuccID = 0x00;
-                int StartID = 0x00;
-                int EndID = 0x00;
-                int NutEnd = 0x00;
-
-                for (int x = 0; x < fileBytes.Count - 3; x++)
-                {
-                    //nucc
-                    if (fileBytes[x] == 110 && fileBytes[x + 1] == 117 && fileBytes[x + 2] == 99 && fileBytes[x + 3] == 99)
-                    {
-                        nuccID = x;
-                        for (int o = nuccID; o < fileBytes.Count; o++)
-                        {
-                            if (fileBytes[o] == 0 && fileBytes[o + 1] == 0)
-                            {
-                                StartID = o + 2;
-                                o = fileBytes.Count;
-                            }
-                        }
-                        x = fileBytes.Count;
-                    }
-                }
-                for (int x = StartID + 1; x < fileBytes.Count; x++)
-                {
-                    if (fileBytes[x] == 0 && fileBytes[x + 1] == 0 && fileBytes[x + 2] == 0 && fileBytes[x + 3] == 0)
-                    {
-                        EndID = x;
-                        x = fileBytes.Count;
-                    }
-                }
-
-                NutEnd = StartID;
-
-                List<string> Lines = new List<string>();
-                List<byte> nameBytes = new List<byte>();
-                // Clears textbox if browse is clicked again
-                selectTexBox.Items.Clear();
-
-                for (int x = NutEnd; x < EndID; x++)
-                {
-                    //.nut
-                    if (fileBytes[x] == 0x2E && fileBytes[x + 1] == 0x6E && fileBytes[x + 2] == 0x75 && fileBytes[x + 3] == 0x74)
-                    {
-                        for (int i = x; i > NutEnd; i--)
-                        {
-                            // /
-                            if (fileBytes[i] == 0x2F)
-                            {
-                                for (int b = i + 1; b < x; b++)
-                                {
-                                    nameBytes.Add(fileBytes[b]);
-                                }
-                                nameBytes.Add(0x0A);
-                                i = NutEnd - 1;
-                            }
-                        }
-                        nameCount++;
-                    }
-                    if (nameCount == textureCount) x = EndID;
-                }
-
-                // Alternate fix for extra line, needed here before we add it to the list
-                int lastByte = nameBytes.Count - 1;
-                nameBytes.RemoveAt(lastByte);
-
-                string tx = Encoding.ASCII.GetString(nameBytes.ToArray());
-                Lines = tx.Split('\n').ToList();
-                nameBytes.Clear();
-
-                // Add names to their corresponding textures
-                for (int x = 0; x < nameCount; x++)
-                {
-                    texList[x].TexName = Lines[x];
-                }
-
-                foreach (var nameInList in texList)
-                {
-                    selectTexBox.Items.Add(nameInList.TexName);
-                    // Remove empty line at the end
-                    if (nameInList.TexName == "")
-                        selectTexBox.Items.Remove(nameInList.TexName);
-                }
+                int x = searchResults[i];
+                int start = Program.SearchForByte("/", fileBytes, x, NutEnd, 1)[0];
+                for (int b = start + 1; b < x; b++) nameBytes.Add(fileBytes[b]);
+                nameBytes.Add(0x0A);
+                nameCount++;
+                if (nameCount == textureCount) i = searchResults.Count;
             }
+
+            // Alternate fix for extra line, needed here before we add it to the list
+            int lastByte = nameBytes.Count - 1;
+            nameBytes.RemoveAt(lastByte);
+
+            string tx = Encoding.ASCII.GetString(nameBytes.ToArray());
+            Lines = tx.Split('\n').ToList();
+            nameBytes.Clear();
+
+            // Add names to their corresponding textures
+            for (int x = 0; x < nameCount; x++)
+            {
+                texList[x].TexName = Lines[x];
+            }
+
+            foreach (var nameInList in texList)
+            {
+                selectTexBox.Items.Add(nameInList.TexName);
+                // Remove empty line at the end
+                if (nameInList.TexName == "")
+                    selectTexBox.Items.Remove(nameInList.TexName);
+            }
+
+            // Change focus to selectTexBox and enable buttons
             selectTexBox.SelectedIndex = 0;
             selectTexBox.Focus();
             EnableButtons();
