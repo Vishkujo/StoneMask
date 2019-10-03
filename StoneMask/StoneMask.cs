@@ -99,25 +99,12 @@ namespace StoneMask
             xfbinOpen = false;
         }
 
-        private void XfbinBackup()
+        private void XfbinBackup(FileInfo info)
         {
-            if (File.Exists(xfbinPath + ".bak"))
+            if (!File.Exists(xfbinPath + ".bak") && !xfbinPath.EndsWith(".bak"))
             {
-                FileStream bak = File.Open(xfbinPath + ".bak", FileMode.Open);
-                FileStream xfbin = File.Open(xfbinPath, FileMode.Open);
-                if (!bak.Equals(xfbin))
-                {
-                    bak.Dispose();
-                    xfbin.Dispose();
-                    File.WriteAllBytes(xfbinPath + ".bak", fileBytes.ToArray());
-                }
-                else
-                {
-                    bak.Dispose();
-                    xfbin.Dispose();
-                }
+                info.CopyTo(xfbinPath + ".bak");
             }
-            else if (!xfbinPath.EndsWith(".bak")) File.WriteAllBytes(xfbinPath + ".bak", fileBytes.ToArray());
         }
 
         private void XfbinOpen()
@@ -131,7 +118,6 @@ namespace StoneMask
             {
                 fileBytes.Add(xfbinFile[a]);
             }
-            XfbinBackup();
 
             //Generate list of NTP3 files
             {
@@ -688,6 +674,7 @@ namespace StoneMask
         private void XfbinSave_Click(object sender, EventArgs e)
         {
             FileInfo file = new FileInfo(xfbinPath);
+            XfbinBackup(file);
             File.WriteAllBytes(xfbinPath, fileBytes.ToArray());
             MessageBox.Show("File saved as " + file.Name + " in the original directory.", $"Success");
         }
