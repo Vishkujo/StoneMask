@@ -14,6 +14,7 @@ using TeximpNet;
 using TeximpNet.DDS;
 using TeximpNet.Compression;
 using DDSReader;
+using static StoneMask.Program;
 
 namespace StoneMask
 {
@@ -121,7 +122,7 @@ namespace StoneMask
             }
 
             //Generate list of NTP3 files
-            searchResults = Program.SearchForByte("NTP3", fileBytes, 0, fileBytes.Count, 0);
+            searchResults = SearchForByte("NTP3", fileBytes, 0, fileBytes.Count, 0);
             for (int i = 0; i < searchResults.Count; i++)
             {
                 int x = searchResults[i];
@@ -202,9 +203,9 @@ namespace StoneMask
             }
 
             // Generate texture names list
-            int nuccID = Program.SearchForByte("nucc", fileBytes, 5, fileBytes.Count, 1)[0];
-            int StartID = Program.SearchForByte("null2", fileBytes, nuccID, fileBytes.Count, 1)[0] + 2;
-            int EndID = Program.SearchForByte("null4", fileBytes, nuccID, fileBytes.Count, 1)[0];
+            int nuccID = SearchForByte("nucc", fileBytes, 5, fileBytes.Count, 1)[0];
+            int StartID = SearchForByte("null2", fileBytes, nuccID, fileBytes.Count, 1)[0] + 2;
+            int EndID = SearchForByte("null4", fileBytes, nuccID, fileBytes.Count, 1)[0];
             int NutEnd = StartID;
 
             List<string> Lines = new List<string>();
@@ -212,11 +213,11 @@ namespace StoneMask
             // Clears textbox if browse is clicked again
             selectTexBox.Items.Clear();
 
-            searchResults = Program.SearchForByte(".nut", fileBytes, NutEnd, EndID, 0);
+            searchResults = SearchForByte(".nut", fileBytes, NutEnd, EndID, 0);
             for (int i = 0; i < searchResults.Count; i++)
             {
                 int x = searchResults[i];
-                int start = Program.SearchForByte("/", fileBytes, x, NutEnd, 1)[0];
+                int start = SearchForByte("/", fileBytes, x, NutEnd, 1)[0];
                 for (int b = start + 1; b < x; b++) nameBytes.Add(fileBytes[b]);
                 nameBytes.Add(0x0A);
                 nameCount++;
