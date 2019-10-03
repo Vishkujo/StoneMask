@@ -72,7 +72,7 @@ namespace StoneMask
             if (xfbinOpen && textureCount > 0)
             {
                 exportXfbinDDS.Enabled = true;
-                exportNUT.Enabled = true;
+                //exportNUT.Enabled = true; (Disabled for now as previously modded textures don't load in smash forge)
                 if (moddedTexOpen == true)
                 {
                     replaceButton.Enabled = true;
@@ -643,7 +643,14 @@ namespace StoneMask
 
         private void ExportNUT_Click(object sender, EventArgs e)
         {
-
+            int index = selectTexBox.SelectedIndex;
+            List<byte> nut = new List<byte>();
+            for (int x = texList[index].NutIndex; x < texList[index].NutIndex + texList[index].FileSize; x++)
+            {
+                nut.Add(fileBytes[x]);
+            }
+            File.WriteAllBytes($"{texList[index].TexName}.nut", nut.ToArray());
+            MessageBox.Show($"Texture saved as \"{texList[index].TexName}.nut\" in the program folder.", $"Success");
         }
 
         private void ReplaceButton_Click(object sender, EventArgs e)
