@@ -548,7 +548,7 @@ namespace StoneMask
         public void CompressDDS()
         {
             Surface newDDS = Surface.LoadFromFile(moddedTexPath, true);
-            MipmapFilter MipmapFilter = MipmapFilter.Triangle;
+            MipmapFilter MipmapFilter = MipmapFilter.Box;
             CompressionFormat texFormat = new CompressionFormat();
             if (exportSettingBox.SelectedIndex == 0)
                 texFormat = CompressionFormat.DXT1a;
