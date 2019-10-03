@@ -45,7 +45,7 @@ namespace StoneMask
 
         public static string ProgramVersion
         {
-            get { return "1.0"; }
+            get { return "1.0.1"; }
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
