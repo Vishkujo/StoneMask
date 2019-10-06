@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Windows.Forms;
+
 namespace StoneMask
 {
     static class Program
@@ -66,6 +68,12 @@ namespace StoneMask
                 else x++;
             }
             return indices;
+        }
+
+        public static string GetPath(string file)
+        {
+            FileInfo fileInfo = new FileInfo(file);
+            return fileInfo.DirectoryName;
         }
     }
 }

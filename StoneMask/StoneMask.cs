@@ -10,6 +10,7 @@ using TeximpNet;
 using TeximpNet.DDS;
 using TeximpNet.Compression;
 using DDSReader;
+using StoneMask.Properties;
 using static StoneMask.Program;
 using static StoneMask.Variables;
 
@@ -20,6 +21,12 @@ namespace StoneMask
         public StoneMask()
         {
             InitializeComponent();
+        }
+
+        private void NoesisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NoesisSettings settings = new NoesisSettings();
+            settings.Show(this);
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -34,6 +41,7 @@ namespace StoneMask
             {
                 exportXfbinDDS.Enabled = true;
                 //exportNUT.Enabled = true; (Disabled for now as previously modded textures don't load in smash forge)
+                modelPreview.Enabled = true;
                 if (moddedTexOpen == true)
                 {
                     replaceButton.Enabled = true;
@@ -621,11 +629,30 @@ namespace StoneMask
             CompressDDS();
         }
 
-        private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
+        private void ModelPreview_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            string directory = Settings.Default.NoesisDirectory;
+            if (File.Exists(directory + @"\Noesis.exe"))
+            {
+                Noesis = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                {
+                    WorkingDirectory = directory,
+                    FileName = "Noesis.exe",
+                    Arguments = ""
+                };
+                Noesis.StartInfo = startInfo;
+                noesisStarted = Noesis.Start();
+            }
+            else MessageBox.Show($"Noesis path not set. Please change it from \"Settings\".", $"Error");
         }
 
+        private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (noesisStarted && !Noesis.HasExited)
+                Noesis.CloseMainWindow();
+            Application.Exit();
+        }
 
         // Clears the folder in AppData until we add an option to keep the files
         /* Commented out for now cause it can't delete files downloaded from discord app

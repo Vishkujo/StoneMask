@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Diagnostics;
 
 namespace StoneMask
 {
@@ -16,6 +17,7 @@ namespace StoneMask
         public static bool moddedTexOpen;
         public static bool isWebImage = false;
         public static bool ddsNoHeader = false;
+        public static bool noesisStarted = false;
         public static List<byte> fileBytes = new List<byte>();
         public static List<int> searchResults = new List<int>();
         public static List<NUT> texList = new List<NUT>();
@@ -23,6 +25,7 @@ namespace StoneMask
         public static int textureCount = 0;
         public static int nameCount = 0;
         public static MemoryStream ddsStream = new MemoryStream();
+        public static Process Noesis;
 
         public static string ProgramVersion
         {
