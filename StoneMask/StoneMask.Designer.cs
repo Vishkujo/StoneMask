@@ -75,6 +75,7 @@ namespace StoneMask
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.texturePreview1 = new System.Windows.Forms.PictureBox();
             this.texturePreview2 = new System.Windows.Forms.PictureBox();
+            this.openModelDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).BeginInit();
@@ -552,6 +553,10 @@ namespace StoneMask
             this.texturePreview2.TabIndex = 25;
             this.texturePreview2.TabStop = false;
             // 
+            // openModelDialog
+            // 
+            this.openModelDialog.Filter = "Model XFBIN|*.xfbin";
+            // 
             // StoneMask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -660,6 +665,7 @@ namespace StoneMask
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NoesisToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.OpenFileDialog openModelDialog;
     }
 }
 

@@ -447,7 +447,6 @@ namespace StoneMask
         public void SaveWebImage(string filename, System.Drawing.Imaging.ImageFormat format)
         {
             if (filename == "") return;
-            string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StoneMask");
             if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
             WebClient client = new WebClient();
             Stream stream = client.OpenRead(imageUrl);
@@ -629,22 +628,52 @@ namespace StoneMask
             CompressDDS();
         }
 
+        private bool CreateModelPreview()
+        {
+            if (SearchForByte("NDP3", modelBytes, 0, modelBytes.Count, 0).Any())
+            {
+                int index = SearchForByte("NTP3", modelBytes, 0, modelBytes.Count, 1)[0];
+                int texIndex = SearchForByte("GIDX", modelBytes, index, modelBytes.Count, 1)[0] + 0x10;
+                int texSize = modelBytes[index + 0x19] * 0x10000 + modelBytes[index + 0x1A] * 0x100 + modelBytes[index + 0x1B];
+                int nutSize = texList[selectTexBox.SelectedIndex].NTP3Size;
+                byte[] newTexture = new byte[nutSize];
+                fileBytes.CopyTo(texList[selectTexBox.SelectedIndex].NutIndex, newTexture, 0, nutSize);
+                ReplaceModelTexture(index, texIndex, texSize, newTexture);
+                File.WriteAllBytes(appData + @"\Preview.xfbin", modelBytes.ToArray());
+                return true;
+            }
+            else
+            {
+                MessageBox.Show($"Xfbin doesn't contain any meshes. Please select a valid xfbin.", $"Error");
+                return false;
+            }
+        }
+
         private void ModelPreview_Click(object sender, EventArgs e)
         {
-            string directory = Settings.Default.NoesisDirectory;
-            if (File.Exists(directory + @"\Noesis.exe"))
+            openModelDialog.Multiselect = false;
+            if (openModelDialog.ShowDialog() == DialogResult.OK)
             {
-                Noesis = new System.Diagnostics.Process();
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                modelBytes.Clear();
+                modelBytes = File.ReadAllBytes(openModelDialog.FileName).ToList();
+                string directory = Settings.Default.NoesisDirectory;
+                if (CreateModelPreview())
                 {
-                    WorkingDirectory = directory,
-                    FileName = "Noesis.exe",
-                    Arguments = ""
-                };
-                Noesis.StartInfo = startInfo;
-                noesisStarted = Noesis.Start();
+                    if (File.Exists(directory + @"\Noesis.exe"))
+                    {
+                        Noesis = new System.Diagnostics.Process();
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                        {
+                            WorkingDirectory = directory,
+                            FileName = "Noesis.exe",
+                            Arguments = appData + @"\Preview.xfbin"
+                        };
+                        Noesis.StartInfo = startInfo;
+                        noesisStarted = Noesis.Start();
+                    }
+                    else MessageBox.Show($"Noesis path not set. Please change it from \"Settings\".", $"Error");
+                }
             }
-            else MessageBox.Show($"Noesis path not set. Please change it from \"Settings\".", $"Error");
         }
 
         private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
@@ -658,7 +687,7 @@ namespace StoneMask
         /* Commented out for now cause it can't delete files downloaded from discord app
         private void StoneMask_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StoneMask"));
+            DirectoryInfo di = new DirectoryInfo(appData);
 
             foreach (FileInfo file in di.EnumerateFiles())
             {

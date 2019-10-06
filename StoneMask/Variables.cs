@@ -13,12 +13,14 @@ namespace StoneMask
         public static string moddedFormat;
         public static string dragFilePath;
         public static string imageUrl;
+        public static string previewFile;
         public static bool xfbinOpen;
         public static bool moddedTexOpen;
         public static bool isWebImage = false;
         public static bool ddsNoHeader = false;
         public static bool noesisStarted = false;
         public static List<byte> fileBytes = new List<byte>();
+        public static List<byte> modelBytes = new List<byte>();
         public static List<int> searchResults = new List<int>();
         public static List<NUT> texList = new List<NUT>();
         public static List<string> dlPics = new List<string>();
@@ -44,6 +46,11 @@ namespace StoneMask
             }
             else return "Unknown format";
         }
+
+        public static string appData = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "StoneMask"
+            );
     }
 
     public class NUT
