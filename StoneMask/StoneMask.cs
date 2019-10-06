@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Windows.Forms;
@@ -15,6 +11,7 @@ using TeximpNet.DDS;
 using TeximpNet.Compression;
 using DDSReader;
 using static StoneMask.Program;
+using static StoneMask.Variables;
 
 namespace StoneMask
 {
@@ -25,47 +22,10 @@ namespace StoneMask
             InitializeComponent();
         }
 
-        // variables
-        public string xfbinPath;
-        public string moddedTexPath;
-        public string moddedFormat;
-        public string dragFilePath;
-        public string imageUrl;
-        public bool xfbinOpen;
-        public bool moddedTexOpen;
-        public bool isWebImage = false;
-        public bool ddsNoHeader = false;
-        public List<byte> fileBytes = new List<byte>();
-        public List<int> searchResults = new List<int>();
-        public List<NUT> texList = new List<NUT>();
-        public List<string> dlPics = new List<string>();
-        public int textureCount = 0;
-        public int nameCount = 0;
-        public MemoryStream ddsStream = new MemoryStream();
-
-        public static string ProgramVersion
-        {
-            get { return "1.0.1"; }
-        }
-
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             About aboutPopup = new About();
             aboutPopup.Show(this);
-        }
-
-        // Gets compression format from NTP3 header
-        public string NTP3Format(int formatByte)
-        {
-            if (formatByte == 0x0)
-            {
-                return "DXT1";
-            }
-            else if (formatByte == 0x2)
-            {
-                return "DXT5";
-            }
-            else return "Unknown format";
         }
 
         private void EnableButtons()
@@ -262,6 +222,7 @@ namespace StoneMask
                 XfbinOpen();
             }
         }
+
         // Open XFBIN (Drag and Drop)
         private void XfbinPathBox_DragOver(object sender, DragEventArgs e)
         {

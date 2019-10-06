@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using static StoneMask.Variables;
 
 namespace StoneMask
 {
@@ -20,7 +15,7 @@ namespace StoneMask
 
         private void About_Load(object sender, EventArgs e)
         {
-            versionNoLabel.Text = StoneMask.ProgramVersion;
+            versionNoLabel.Text = ProgramVersion;
             // Centers the popup
             if (Owner != null)
                 Location = new Point(Owner.Location.X + Owner.Width / 2 - Width / 2,

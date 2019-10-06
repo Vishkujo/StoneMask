@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using System.Windows.Forms;
-
 namespace StoneMask
 {
     static class Program
@@ -70,22 +67,5 @@ namespace StoneMask
             }
             return indices;
         }
-    }
-
-    public class NUT
-    {
-        public string TexName { get; set; }
-        public int NutIndex { get; set; }
-        public int TexIndex { get; set; }
-        public int FileSize { get; set; }
-        public int NTP3Size { get; set; }
-        public int HeaderSize { get; set; }
-        public int TexSize { get; set; }
-        public string Format { get; set; }
-        public int MipMaps { get; set; }
-        public int ResX { get; set; }
-        public int ResY { get; set; }
-        public List<byte> TexFile { get; set; }
-        public Bitmap Preview { get; set; }
     }
 }
