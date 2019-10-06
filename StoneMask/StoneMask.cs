@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Windows.Forms;
@@ -14,7 +10,9 @@ using TeximpNet;
 using TeximpNet.DDS;
 using TeximpNet.Compression;
 using DDSReader;
+using StoneMask.Properties;
 using static StoneMask.Program;
+using static StoneMask.Variables;
 
 namespace StoneMask
 {
@@ -25,27 +23,10 @@ namespace StoneMask
             InitializeComponent();
         }
 
-        // variables
-        public string xfbinPath;
-        public string moddedTexPath;
-        public string moddedFormat;
-        public string dragFilePath;
-        public string imageUrl;
-        public bool xfbinOpen;
-        public bool moddedTexOpen;
-        public bool isWebImage = false;
-        public bool ddsNoHeader = false;
-        public List<byte> fileBytes = new List<byte>();
-        public List<int> searchResults = new List<int>();
-        public List<NUT> texList = new List<NUT>();
-        public List<string> dlPics = new List<string>();
-        public int textureCount = 0;
-        public int nameCount = 0;
-        public MemoryStream ddsStream = new MemoryStream();
-
-        public static string ProgramVersion
+        private void NoesisToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            get { return "1.0.1"; }
+            NoesisSettings settings = new NoesisSettings();
+            settings.Show(this);
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -54,26 +35,13 @@ namespace StoneMask
             aboutPopup.Show(this);
         }
 
-        // Gets compression format from NTP3 header
-        public string NTP3Format(int formatByte)
-        {
-            if (formatByte == 0x0)
-            {
-                return "DXT1";
-            }
-            else if (formatByte == 0x2)
-            {
-                return "DXT5";
-            }
-            else return "Unknown format";
-        }
-
         private void EnableButtons()
         {
             if (xfbinOpen && textureCount > 0)
             {
                 exportXfbinDDS.Enabled = true;
                 //exportNUT.Enabled = true; (Disabled for now as previously modded textures don't load in smash forge)
+                modelPreview.Enabled = true;
                 if (moddedTexOpen == true)
                 {
                     replaceButton.Enabled = true;
@@ -262,6 +230,7 @@ namespace StoneMask
                 XfbinOpen();
             }
         }
+
         // Open XFBIN (Drag and Drop)
         private void XfbinPathBox_DragOver(object sender, DragEventArgs e)
         {
@@ -478,7 +447,6 @@ namespace StoneMask
         public void SaveWebImage(string filename, System.Drawing.Imaging.ImageFormat format)
         {
             if (filename == "") return;
-            string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StoneMask");
             if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
             WebClient client = new WebClient();
             Stream stream = client.OpenRead(imageUrl);
@@ -660,17 +628,66 @@ namespace StoneMask
             CompressDDS();
         }
 
-        private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
+        private bool CreateModelPreview()
         {
-            Application.Exit();
+            if (SearchForByte("NDP3", modelBytes, 0, modelBytes.Count, 0).Any())
+            {
+                int index = SearchForByte("NTP3", modelBytes, 0, modelBytes.Count, 1)[0];
+                int texIndex = SearchForByte("GIDX", modelBytes, index, modelBytes.Count, 1)[0] + 0x10;
+                int texSize = modelBytes[index + 0x19] * 0x10000 + modelBytes[index + 0x1A] * 0x100 + modelBytes[index + 0x1B];
+                int nutSize = texList[selectTexBox.SelectedIndex].NTP3Size;
+                byte[] newTexture = new byte[nutSize];
+                fileBytes.CopyTo(texList[selectTexBox.SelectedIndex].NutIndex, newTexture, 0, nutSize);
+                ReplaceModelTexture(index, texIndex, texSize, newTexture);
+                File.WriteAllBytes(appData + @"\Preview.xfbin", modelBytes.ToArray());
+                return true;
+            }
+            else
+            {
+                MessageBox.Show($"Xfbin doesn't contain any meshes. Please select a valid xfbin.", $"Error");
+                return false;
+            }
         }
 
+        private void ModelPreview_Click(object sender, EventArgs e)
+        {
+            openModelDialog.Multiselect = false;
+            if (openModelDialog.ShowDialog() == DialogResult.OK)
+            {
+                modelBytes.Clear();
+                modelBytes = File.ReadAllBytes(openModelDialog.FileName).ToList();
+                string directory = Settings.Default.NoesisDirectory;
+                if (CreateModelPreview())
+                {
+                    if (File.Exists(directory + @"\Noesis.exe"))
+                    {
+                        Noesis = new System.Diagnostics.Process();
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+                        {
+                            WorkingDirectory = directory,
+                            FileName = "Noesis.exe",
+                            Arguments = appData + @"\Preview.xfbin"
+                        };
+                        Noesis.StartInfo = startInfo;
+                        noesisStarted = Noesis.Start();
+                    }
+                    else MessageBox.Show($"Noesis path not set. Please change it from \"Settings\".", $"Error");
+                }
+            }
+        }
+
+        private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (noesisStarted && !Noesis.HasExited)
+                Noesis.CloseMainWindow();
+            Application.Exit();
+        }
 
         // Clears the folder in AppData until we add an option to keep the files
         /* Commented out for now cause it can't delete files downloaded from discord app
         private void StoneMask_FormClosing(object sender, FormClosingEventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StoneMask"));
+            DirectoryInfo di = new DirectoryInfo(appData);
 
             foreach (FileInfo file in di.EnumerateFiles())
             {

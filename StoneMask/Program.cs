@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using System.IO;
 using System.Windows.Forms;
+using static StoneMask.Variables;
 
 namespace StoneMask
 {
@@ -70,22 +70,27 @@ namespace StoneMask
             }
             return indices;
         }
-    }
 
-    public class NUT
-    {
-        public string TexName { get; set; }
-        public int NutIndex { get; set; }
-        public int TexIndex { get; set; }
-        public int FileSize { get; set; }
-        public int NTP3Size { get; set; }
-        public int HeaderSize { get; set; }
-        public int TexSize { get; set; }
-        public string Format { get; set; }
-        public int MipMaps { get; set; }
-        public int ResX { get; set; }
-        public int ResY { get; set; }
-        public List<byte> TexFile { get; set; }
-        public Bitmap Preview { get; set; }
+        public static string GetPath(string file)
+        {
+            FileInfo fileInfo = new FileInfo(file);
+            return fileInfo.DirectoryName;
+        }
+
+        public static void ReplaceModelTexture(int index, int texIndex, int texSize, byte[] newTexture)
+        {
+            int a = index;
+            int b = texIndex;
+            int z = texSize;
+
+            // Move the rest of the file into a new array temporarily
+            byte[] temp = new byte[modelBytes.Count - (a)];
+            modelBytes.CopyTo(a, temp, 0, modelBytes.Count - (a));
+            modelBytes.RemoveRange(a, modelBytes.Count - a);
+
+            // Add the new texture and the rest of the file
+            for (int i = 0; i < newTexture.Length; i++) modelBytes.Add(newTexture[i]);
+            for (int i = 0; i < temp.Length; i++) modelBytes.Add(temp[i]);
+        }
     }
 }
