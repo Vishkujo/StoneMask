@@ -31,7 +31,7 @@ namespace StoneMask
 
         public static string ProgramVersion
         {
-            get { return "1.0.1"; }
+            get { return "1.0.2"; }
         }
 
         public static string NTP3Format(int formatByte)

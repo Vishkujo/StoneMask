@@ -79,7 +79,6 @@
             this.closeCheckBox.TabIndex = 27;
             this.closeCheckBox.Text = "Close Noesis with StoneMask";
             this.closeCheckBox.UseVisualStyleBackColor = true;
-            this.closeCheckBox.CheckedChanged += new System.EventHandler(this.closeCheckBox_CheckedChanged);
             // 
             // openNoesisPathDialog
             // 
