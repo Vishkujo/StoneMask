@@ -36,13 +36,14 @@
             this.openNoesisPathDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.previewCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // directoryLabel
             // 
             this.directoryLabel.AutoSize = true;
             this.directoryLabel.BackColor = System.Drawing.SystemColors.Control;
-            this.directoryLabel.Location = new System.Drawing.Point(9, 31);
+            this.directoryLabel.Location = new System.Drawing.Point(9, 30);
             this.directoryLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.directoryLabel.Name = "directoryLabel";
             this.directoryLabel.Size = new System.Drawing.Size(100, 17);
@@ -52,7 +53,7 @@
             // directoryBox
             // 
             this.directoryBox.AllowDrop = true;
-            this.directoryBox.Location = new System.Drawing.Point(125, 28);
+            this.directoryBox.Location = new System.Drawing.Point(125, 27);
             this.directoryBox.Margin = new System.Windows.Forms.Padding(2);
             this.directoryBox.Name = "directoryBox";
             this.directoryBox.Size = new System.Drawing.Size(294, 22);
@@ -61,7 +62,7 @@
             // 
             // directoryBrowse
             // 
-            this.directoryBrowse.Location = new System.Drawing.Point(438, 23);
+            this.directoryBrowse.Location = new System.Drawing.Point(438, 22);
             this.directoryBrowse.Margin = new System.Windows.Forms.Padding(2);
             this.directoryBrowse.Name = "directoryBrowse";
             this.directoryBrowse.Size = new System.Drawing.Size(98, 33);
@@ -73,13 +74,12 @@
             // closeCheckBox
             // 
             this.closeCheckBox.AutoSize = true;
-            this.closeCheckBox.Location = new System.Drawing.Point(12, 87);
+            this.closeCheckBox.Location = new System.Drawing.Point(12, 70);
             this.closeCheckBox.Name = "closeCheckBox";
             this.closeCheckBox.Size = new System.Drawing.Size(214, 21);
             this.closeCheckBox.TabIndex = 27;
             this.closeCheckBox.Text = "Close Noesis with StoneMask";
             this.closeCheckBox.UseVisualStyleBackColor = true;
-            this.closeCheckBox.CheckedChanged += new System.EventHandler(this.closeCheckBox_CheckedChanged);
             // 
             // openNoesisPathDialog
             // 
@@ -107,12 +107,23 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
+            // previewCheckBox
+            // 
+            this.previewCheckBox.AutoSize = true;
+            this.previewCheckBox.Location = new System.Drawing.Point(12, 110);
+            this.previewCheckBox.Name = "previewCheckBox";
+            this.previewCheckBox.Size = new System.Drawing.Size(377, 21);
+            this.previewCheckBox.TabIndex = 30;
+            this.previewCheckBox.Text = "Create \"preview.xfbin\" in the same folder as StoneMask";
+            this.previewCheckBox.UseVisualStyleBackColor = true;
+            // 
             // NoesisSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(547, 353);
+            this.Controls.Add(this.previewCheckBox);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.closeCheckBox);
@@ -141,5 +152,6 @@
         private System.Windows.Forms.OpenFileDialog openNoesisPathDialog;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.CheckBox previewCheckBox;
     }
 }

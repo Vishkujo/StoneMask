@@ -34,5 +34,29 @@ namespace StoneMask.Properties {
                 this["NoesisDirectory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PreviewCheck {
+            get {
+                return ((bool)(this["PreviewCheck"]));
+            }
+            set {
+                this["PreviewCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool NoesisCloseCheck {
+            get {
+                return ((bool)(this["NoesisCloseCheck"]));
+            }
+            set {
+                this["NoesisCloseCheck"] = value;
+            }
+        }
     }
 }

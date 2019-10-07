@@ -65,6 +65,7 @@ namespace StoneMask
             this.resolutionLabel2 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.NoesisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -72,7 +73,6 @@ namespace StoneMask
             this.mipMapSetting = new System.Windows.Forms.TrackBar();
             this.mipSliderValue = new System.Windows.Forms.Label();
             this.modelPreview = new System.Windows.Forms.Button();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.texturePreview1 = new System.Windows.Forms.PictureBox();
             this.texturePreview2 = new System.Windows.Forms.PictureBox();
             this.openModelDialog = new System.Windows.Forms.OpenFileDialog();
@@ -467,6 +467,11 @@ namespace StoneMask
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
             this.settingsToolStripMenuItem.Text = "&Settings";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(125, 6);
+            // 
             // NoesisToolStripMenuItem
             // 
             this.NoesisToolStripMenuItem.Name = "NoesisToolStripMenuItem";
@@ -529,11 +534,6 @@ namespace StoneMask
             this.modelPreview.Text = "Preview in Noesis";
             this.modelPreview.UseVisualStyleBackColor = true;
             this.modelPreview.Click += new System.EventHandler(this.ModelPreview_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(125, 6);
             // 
             // texturePreview1
             // 
@@ -608,6 +608,7 @@ namespace StoneMask
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Stone Mask - JoJo ASB/EoH Texture Editor";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StoneMask_FormClosed);
+            this.Load += new System.EventHandler(this.StoneMask_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).EndInit();

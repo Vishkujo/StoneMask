@@ -447,7 +447,6 @@ namespace StoneMask
         public void SaveWebImage(string filename, System.Drawing.Imaging.ImageFormat format)
         {
             if (filename == "") return;
-            if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
             WebClient client = new WebClient();
             Stream stream = client.OpenRead(imageUrl);
             Bitmap bitmap; bitmap = new Bitmap(stream);
@@ -639,7 +638,7 @@ namespace StoneMask
                 byte[] newTexture = new byte[nutSize];
                 fileBytes.CopyTo(texList[selectTexBox.SelectedIndex].NutIndex, newTexture, 0, nutSize);
                 ReplaceModelTexture(index, texIndex, texSize, newTexture);
-                File.WriteAllBytes(appData + @"\Preview.xfbin", modelBytes.ToArray());
+                File.WriteAllBytes(Path.Combine(previewPath, "preview.xfbin"), modelBytes.ToArray());
                 return true;
             }
             else
@@ -657,16 +656,19 @@ namespace StoneMask
                 modelBytes.Clear();
                 modelBytes = File.ReadAllBytes(openModelDialog.FileName).ToList();
                 string directory = Settings.Default.NoesisDirectory;
+                if (Settings.Default.PreviewCheck)
+                    previewPath = Path.GetDirectoryName(Application.ExecutablePath);
+                else previewPath = appData;
                 if (CreateModelPreview())
                 {
-                    if (File.Exists(directory + @"\Noesis.exe"))
+                    if (File.Exists(Path.Combine(directory, "Noesis.exe")))
                     {
                         Noesis = new System.Diagnostics.Process();
                         System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
                         {
                             WorkingDirectory = directory,
                             FileName = "Noesis.exe",
-                            Arguments = appData + @"\Preview.xfbin"
+                            Arguments = Path.Combine(previewPath, "preview.xfbin")
                         };
                         Noesis.StartInfo = startInfo;
                         noesisStarted = Noesis.Start();
@@ -678,9 +680,14 @@ namespace StoneMask
 
         private void StoneMask_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (noesisStarted && !Noesis.HasExited)
+            if (Settings.Default.NoesisCloseCheck && noesisStarted && !Noesis.HasExited)
                 Noesis.CloseMainWindow();
             Application.Exit();
+        }
+
+        private void StoneMask_Load(object sender, EventArgs e)
+        {
+            if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
         }
 
         // Clears the folder in AppData until we add an option to keep the files
