@@ -13,7 +13,7 @@ namespace StoneMask
         public static string moddedFormat;
         public static string dragFilePath;
         public static string imageUrl;
-        public static string previewFile;
+        public static string previewPath;
         public static bool xfbinOpen;
         public static bool moddedTexOpen;
         public static bool isWebImage = false;

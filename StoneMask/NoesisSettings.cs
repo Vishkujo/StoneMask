@@ -30,6 +30,8 @@ namespace StoneMask
                 Location = new Point(Owner.Location.X + Owner.Width / 2 - Width / 2,
                     Owner.Location.Y + Owner.Height / 2 - Height / 2);
             directoryBox.Text = Settings.Default.NoesisDirectory;
+            closeCheckBox.Checked = Settings.Default.NoesisCloseCheck;
+            previewCheckBox.Checked = Settings.Default.PreviewCheck;
         }
 
         private void DirectoryBox_KeyDown(object sender, KeyEventArgs e)
@@ -57,9 +59,16 @@ namespace StoneMask
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
+            if (previewCheckBox.Checked)
+                Settings.Default.PreviewCheck = true;
+            else Settings.Default.PreviewCheck = false;
+            if (closeCheckBox.Checked)
+                Settings.Default.NoesisCloseCheck = true;
+            else Settings.Default.NoesisCloseCheck = false;
             Settings.Default.NoesisDirectory = directory;
             Settings.Default.Save();
             Close();
         }
+
     }
 }
