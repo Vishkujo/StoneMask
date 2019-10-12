@@ -24,7 +24,7 @@ namespace StoneMask
         public static List<byte> modelBytes = new List<byte>();
         public static List<int> searchResults = new List<int>();
         public static List<NUT> texList = new List<NUT>();
-        public static List<string> dlPics = new List<string>();
+        public static List<string> dlFiles = new List<string>();
         public static int textureCount = 0;
         public static int nameCount = 0;
         public static MemoryStream ddsStream = new MemoryStream();

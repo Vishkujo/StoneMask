@@ -248,15 +248,47 @@ namespace StoneMask
                     }
                 }
             }
+            else if (e.Data.GetDataPresent("UniformResourceLocator")) e.Effect = DragDropEffects.Link;
         }
 
         private void XfbinPathBox_DragDrop(object sender, DragEventArgs e)
         {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            xfbinPathBox.Text = dragFilePath;
-            xfbinPath = xfbinPathBox.Text;
-            XfbinOpen();
-            return;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                xfbinPathBox.Text = dragFilePath;
+                xfbinPath = xfbinPathBox.Text;
+                XfbinOpen();
+            }
+            else if (e.Data.GetDataPresent("UniformResourceLocator"))
+            {
+                MemoryStream ms = e.Data.GetData("UniformResourceLocator") as MemoryStream;
+                byte[] bytes = ms.ToArray();
+                Encoding encode = Encoding.ASCII;
+                string url = encode.GetString(bytes);
+                string fileName = "";
+                imageUrl = "";
+                for (int x = url.Length; x > 1; x--)
+                {
+                    // .png, .jpg, .jpeg
+                    if (url.ElementAt(x - 1) == 'n' && url.ElementAt(x - 2) == 'i' && url.ElementAt(x - 3) == 'b' && 
+                        url.ElementAt(x - 4) == 'f' && url.ElementAt(x - 5) == 'x' && url.ElementAt(x - 6) == '.')
+                    {
+                        imageUrl = url.Remove(x);
+                        x = 1;
+                    }
+                }
+                for (int x = imageUrl.Length; x > 1; x--)
+                {
+                    if (imageUrl.ElementAt(x - 1) == '/')
+                    {
+                        fileName = imageUrl.Substring(x);
+                        x = 1;
+                    }
+                }
+                SaveWebImage(fileName, true);
+                XfbinOpen();
+            }
+
         }
 
         // Open XFBIN (enter key pressed)
@@ -410,10 +442,12 @@ namespace StoneMask
                 Encoding encode = Encoding.ASCII;
                 string url = encode.GetString(bytes);
                 string fileName = "";
+                imageUrl = "";
                 for (int x = url.Length; x > 1; x--)
                 {
                     // .png, .jpg, .jpeg
                     if (url.ElementAt(x - 1) == 'g' && url.ElementAt(x - 2) == 'n' && url.ElementAt(x - 3) == 'p' && url.ElementAt(x - 4) == '.' ||
+                        url.ElementAt(x - 1) == 's' && url.ElementAt(x - 2) == 'd' && url.ElementAt(x - 3) == 'd' && url.ElementAt(x - 4) == '.' ||
                         url.ElementAt(x - 1) == 'g' && url.ElementAt(x - 2) == 'p' && url.ElementAt(x - 3) == 'j' && url.ElementAt(x - 4) == '.' ||
                         url.ElementAt(x - 1) == 'g' && url.ElementAt(x - 2) == 'e' && url.ElementAt(x - 3) == 'p' && url.ElementAt(x - 4) == 'j' && url.ElementAt(x - 5) == '.')
                     {
@@ -429,7 +463,7 @@ namespace StoneMask
                         x = 1;
                     }
                 }
-                SaveWebImage(fileName, System.Drawing.Imaging.ImageFormat.Png);
+                SaveWebImage(fileName, false);
                 isWebImage = true;
                 ModdedTexOpen();
             }
@@ -447,28 +481,42 @@ namespace StoneMask
         }
 
         // Download image
-        public void SaveWebImage(string filename, System.Drawing.Imaging.ImageFormat format)
+        public void SaveWebImage(string filename, bool xfbin)
         {
-            if (filename == "") return;
-            WebClient client = new WebClient();
-            Stream stream = client.OpenRead(imageUrl);
-            Bitmap bitmap; bitmap = new Bitmap(stream);
-            string fileDir = Path.Combine(appData, filename);
-            moddedTexPathBox.Text = fileDir;
-            moddedTexPath = fileDir;
-            if (bitmap != null)
+            if (filename == "")
             {
-                if (File.Exists(fileDir)) File.Delete(fileDir);
-                bitmap.Save(fileDir, format);
-                dlPics.Add(fileDir);
-                texturePreview2.Image = bitmap;
-                texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
+                MessageBox.Show($"Link does not direct to an image.");
+                return;
             }
-            else MessageBox.Show($"Link does not direct to an image.");
-
-            stream.Flush();
-            stream.Close();
+            bool dds = false;
+            if (filename.Contains(".dds"))
+                dds = true;
+            WebClient client = new WebClient();
+            string fileDir = Path.Combine(appData, filename);
+            if (xfbin || dds)
+            {
+                File.WriteAllBytes(fileDir, client.DownloadData(imageUrl));
+                if (xfbin) xfbinPath = fileDir;
+                else moddedTexPath = fileDir;
+            }
+            else
+            {
+                Stream stream = client.OpenRead(imageUrl);
+                Bitmap bitmap = new Bitmap(stream);
+                if (bitmap != null)
+                {
+                    if (File.Exists(fileDir)) File.Delete(fileDir);
+                    bitmap.Save(fileDir, System.Drawing.Imaging.ImageFormat.Png);
+                    moddedTexPath = fileDir;
+                    texturePreview2.Image = bitmap;
+                    texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+                else MessageBox.Show($"Link does not direct to an image.");
+                stream.Flush();
+                stream.Close();
+            }
             client.Dispose();
+            dlFiles.Add(fileDir);
         }
 
         //Convert the png/export as dds
