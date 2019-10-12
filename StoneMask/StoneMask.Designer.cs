@@ -76,6 +76,7 @@ namespace StoneMask
             this.texturePreview1 = new System.Windows.Forms.PictureBox();
             this.texturePreview2 = new System.Windows.Forms.PictureBox();
             this.openModelDialog = new System.Windows.Forms.OpenFileDialog();
+            this.discordDLFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mipMapSetting)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturePreview1)).BeginInit();
@@ -450,7 +451,8 @@ namespace StoneMask
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.helpToolStripMenuItem,
+            this.discordDLFolderToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
@@ -470,12 +472,12 @@ namespace StoneMask
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(125, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
             // 
             // NoesisToolStripMenuItem
             // 
             this.NoesisToolStripMenuItem.Name = "NoesisToolStripMenuItem";
-            this.NoesisToolStripMenuItem.Size = new System.Drawing.Size(128, 26);
+            this.NoesisToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.NoesisToolStripMenuItem.Text = "Noesis";
             this.NoesisToolStripMenuItem.Click += new System.EventHandler(this.NoesisToolStripMenuItem_Click);
             // 
@@ -491,12 +493,12 @@ namespace StoneMask
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(131, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(213, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(134, 26);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.aboutToolStripMenuItem.Text = "&About...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
@@ -556,6 +558,13 @@ namespace StoneMask
             // openModelDialog
             // 
             this.openModelDialog.Filter = "Model XFBIN|*.xfbin";
+            // 
+            // discordDLFolderToolStripMenuItem
+            // 
+            this.discordDLFolderToolStripMenuItem.Name = "discordDLFolderToolStripMenuItem";
+            this.discordDLFolderToolStripMenuItem.Size = new System.Drawing.Size(140, 24);
+            this.discordDLFolderToolStripMenuItem.Text = "&Discord DL Folder";
+            this.discordDLFolderToolStripMenuItem.Click += new System.EventHandler(this.DiscordDLFolderToolStripMenuItem_Click);
             // 
             // StoneMask
             // 
@@ -667,6 +676,7 @@ namespace StoneMask
         private System.Windows.Forms.ToolStripMenuItem NoesisToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.OpenFileDialog openModelDialog;
+        private System.Windows.Forms.ToolStripMenuItem discordDLFolderToolStripMenuItem;
     }
 }
 

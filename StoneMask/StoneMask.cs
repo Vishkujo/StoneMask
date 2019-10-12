@@ -737,8 +737,9 @@ namespace StoneMask
                         Noesis = new System.Diagnostics.Process();
                         System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
                         {
+                            UseShellExecute = false,
                             WorkingDirectory = directory,
-                            FileName = "Noesis.exe",
+                            FileName = Path.Combine(directory, "Noesis.exe"),
                             Arguments = Path.Combine(previewPath, "preview.xfbin")
                         };
                         Noesis.StartInfo = startInfo;
@@ -759,6 +760,11 @@ namespace StoneMask
         private void StoneMask_Load(object sender, EventArgs e)
         {
             if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
+        }
+
+        private void DiscordDLFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(appData);
         }
 
         // Clears the folder in AppData until we add an option to keep the files
