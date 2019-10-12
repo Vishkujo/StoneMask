@@ -92,5 +92,12 @@ namespace StoneMask
             for (int i = 0; i < newTexture.Length; i++) modelBytes.Add(newTexture[i]);
             for (int i = 0; i < temp.Length; i++) modelBytes.Add(temp[i]);
         }
+
+        public static void DDSCompare(int index, string format, int mips)
+        {
+            if (format == texList[index].Format && mips == texList[index].MipMaps)
+                ddsSimilar = true;
+            else ddsSimilar = false;
+        }
     }
 }

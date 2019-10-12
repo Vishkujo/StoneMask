@@ -309,11 +309,12 @@ namespace StoneMask
                 // Get dds data
                 DDSContainer moddedTexture = DDSFile.Read(moddedTexPath);
                 moddedFormat = moddedTexture.Format.ToString();
-                int moddedMipCount = moddedTexture.MipChains[0].Count;
+                moddedDDS.MipMaps = moddedTexture.MipChains[0].Count;
                 if (moddedFormat == "BC3_UNorm")
                     moddedFormat = "DXT5";
                 else if (moddedFormat == "BC1_UNorm")
                     moddedFormat = "DXT1";
+                moddedDDS.Format = moddedFormat;
 
                 // Convert to png for preview
                 DDSImage modDDS = new DDSImage(moddedTexPath);
@@ -322,11 +323,13 @@ namespace StoneMask
                 var newPNG = Image.FromStream(pngStream);
 
                 // Change labels
-                moddedTexCompression.Text = moddedFormat;
-                mipMapCountLabel2.Text = moddedMipCount.ToString();
+                moddedTexCompression.Text = moddedDDS.Format;
+                mipMapCountLabel2.Text = moddedDDS.MipMaps.ToString();
                 texturePreview2.Image = newPNG;
                 previewLabel2.Text = "Preview:";
-                resolutionCheck2.Text = texturePreview2.Image.Width.ToString() + "x" + texturePreview2.Image.Height.ToString();
+                moddedDDS.ResX = texturePreview2.Image.Width;
+                moddedDDS.ResY = texturePreview2.Image.Height;
+                resolutionCheck2.Text = moddedDDS.ResX.ToString() + "x" + moddedDDS.ResY.ToString();
                 texturePreview2.SizeMode = PictureBoxSizeMode.Zoom;
 
                 // Dispose
@@ -623,8 +626,28 @@ namespace StoneMask
 
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
-            ddsNoHeader = true;
-            CompressDDS();
+            // Check if the modded DDS already has the same properties as the Xfbin texture
+            DDSCompare(selectTexBox.SelectedIndex, moddedDDS.Format, moddedDDS.MipMaps);
+            if (ddsSimilar)
+            {
+                byte[] temp = File.ReadAllBytes(moddedTexPath);
+                byte[] ddsArray = new byte[temp.Length - 0x80];
+                Array.Copy(temp, 0x80, ddsArray, 0, temp.Length - 0x80);
+                int ddsLength = ddsArray.Length;
+                int texIndex = selectTexBox.SelectedIndex;
+                CompressionFormat texFormat;
+                if (moddedDDS.Format == "DXT1") texFormat = CompressionFormat.DXT1a;
+                else texFormat = CompressionFormat.DXT5;
+                bool success = ReplaceTexture(texIndex, ddsArray);
+                UpdateNut(texIndex, ddsLength, moddedDDS.MipMaps, texFormat, moddedDDS.ResX, moddedDDS.ResY);
+                if (success) MessageBox.Show($"Texture Replaced.", $"Success");
+                ddsStream.Dispose();
+            }
+            else
+            {
+                ddsNoHeader = true;
+                CompressDDS();
+            }
         }
 
         private bool CreateModelPreview()

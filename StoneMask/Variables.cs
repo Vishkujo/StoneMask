@@ -18,6 +18,7 @@ namespace StoneMask
         public static bool moddedTexOpen;
         public static bool isWebImage = false;
         public static bool ddsNoHeader = false;
+        public static bool ddsSimilar;
         public static bool noesisStarted = false;
         public static List<byte> fileBytes = new List<byte>();
         public static List<byte> modelBytes = new List<byte>();
@@ -28,6 +29,7 @@ namespace StoneMask
         public static int nameCount = 0;
         public static MemoryStream ddsStream = new MemoryStream();
         public static Process Noesis;
+        public static DDSprops moddedDDS = new DDSprops();
 
         public static string ProgramVersion
         {
@@ -68,5 +70,13 @@ namespace StoneMask
         public int ResY { get; set; }
         public List<byte> TexFile { get; set; }
         public Bitmap Preview { get; set; }
+    }
+
+    public class DDSprops
+    {
+        public string Format { get; set; }
+        public int MipMaps { get; set; }
+        public int ResX { get; set; }
+        public int ResY { get; set; }
     }
 }
