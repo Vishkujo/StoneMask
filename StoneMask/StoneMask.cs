@@ -40,7 +40,7 @@ namespace StoneMask
             if (xfbinOpen && textureCount > 0)
             {
                 exportXfbinDDS.Enabled = true;
-                //exportNUT.Enabled = true; (Disabled for now as previously modded textures don't load in smash forge)
+                exportNUT.Enabled = true;
                 modelPreview.Enabled = true;
                 if (moddedTexOpen == true)
                 {
