@@ -1,5 +1,5 @@
 # StoneMask
-**NOT UPDATED FOR ASBR - [Use Nut Tools GUI instead](https://github.com/superuser590/NUT-Tools-GUI)**
+**NOT UPDATED FOR ASBR**
 
 
 StoneMask is a program created by Vish and SutandoTsukai181 which allows users to open .xfbin files (primarily used in CyberConnect2 video games such as JoJo's Bizarre Adventure: All Star Battle and Eyes of Heaven) containing textures.
