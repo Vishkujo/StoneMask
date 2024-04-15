@@ -75,7 +75,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="SixLabors.ImageSharp, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13">
-      <HintPath>..\packages/SixLabors.ImageSharp.2.1.7/lib/net472/SixLabors.ImageSharp.dll</HintPath>
+      <HintPath>..\packages/SixLabors.ImageSharp.2.1.8/lib/net472/SixLabors.ImageSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SixLabors.ImageSharp.Drawing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
